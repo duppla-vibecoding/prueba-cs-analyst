@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prueba CS Analyst · Duppla</title>
+<style>
+  :root {
+    --bg: #0f1115;
+    --surface: #171a21;
+    --surface-2: #1e222b;
+    --border: #2a2f3a;
+    --text: #e6e8ee;
+    --text-dim: #9099a8;
+    --accent: #4f8cff;
+    --accent-hover: #6aa0ff;
+    --warn: #ffb454;
+    --danger: #ff6b6b;
+    --ok: #4cd5a0;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif; line-height: 1.5; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 24px 20px 80px; }
+  h1 { font-size: 24px; margin: 0 0 4px; }
+  h2 { font-size: 18px; margin: 28px 0 10px; }
+  p { margin: 0 0 12px; color: var(--text-dim); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
+  label { display: block; font-weight: 600; margin: 0 0 8px; font-size: 14px; }
+  input[type=email], textarea {
+    width: 100%; background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px; font-size: 15px; font-family: inherit; line-height: 1.5;
+    transition: border-color .15s;
+  }
+  input[type=email]:focus, textarea:focus { outline: none; border-color: var(--accent); }
+  textarea { min-height: 120px; resize: vertical; }
+  .q-title { font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .q-hint { color: var(--text-dim); font-size: 13px; margin-bottom: 10px; }
+  .q-meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-dim); margin-top: 6px; }
+  .saved { color: var(--ok); }
+  button {
+    background: var(--accent); color: white; border: 0; border-radius: 8px;
+    padding: 12px 20px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .15s;
+    font-family: inherit;
+  }
+  button:hover { background: var(--accent-hover); }
+  button:disabled { background: #3a3f48; cursor: not-allowed; }
+  button.ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+  button.ghost:hover { background: var(--surface-2); }
+  .timer-bar {
+    position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--border);
+    padding: 10px 16px; margin: -24px -20px 20px; display: flex; justify-content: space-between;
+    align-items: center; font-size: 14px; z-index: 10;
+  }
+  .timer-bar .clock { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 18px; }
+  .timer-bar.warn .clock { color: var(--warn); }
+  .timer-bar.danger .clock { color: var(--danger); }
+  .hidden { display: none; }
+  .intro-list { padding-left: 20px; color: var(--text-dim); }
+  .intro-list li { margin-bottom: 6px; }
+  .error-box { background: #2a1d1d; border: 1px solid var(--danger); padding: 16px; border-radius: 8px; margin: 16px 0; }
+  .error-box h3 { margin: 0 0 8px; color: var(--danger); font-size: 16px; }
+  .error-box textarea { min-height: 160px; font-family: "SF Mono", Menlo, monospace; font-size: 12px; }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+  .success-box { background: #1a2e24; border: 1px solid var(--ok); padding: 20px; border-radius: 8px; }
+  .success-box h2 { color: var(--ok); margin-top: 0; }
+  .footer-note { color: var(--text-dim); font-size: 13px; margin-top: 24px; text-align: center; }
+  @media (max-width: 600px) { .wrap { padding: 16px; } h1 { font-size: 20px; } }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+
+  <!-- SECTION: welcome (ingreso de email + instrucciones) -->
+  <section id="welcome-section" class="card">
+    <h1>Prueba CS Analyst · Duppla</h1>
+    <p>Hola. Esta es una prueba corta para conocer cómo piensas y trabajas.</p>
+
+    <h2>Cómo funciona</h2>
+    <ul class="intro-list">
+      <li><strong>10 preguntas</strong> abiertas, en orden.</li>
+      <li><strong>30 minutos</strong> en total. El cronómetro empieza cuando hagas click en "Empezar".</li>
+      <li>No hay respuestas "correctas". Sé específica, honesta y concreta.</li>
+      <li>Puedes cerrar la pestaña y volver: el cronómetro y tus respuestas se guardan automáticamente.</li>
+      <li>Cuando termines, haz click en "Enviar". Si se agota el tiempo, se envía automáticamente.</li>
+    </ul>
+
+    <h2>Tu email</h2>
+    <label for="email">Email de contacto</label>
+    <input type="email" id="email" placeholder="tu@email.com" autocomplete="email">
+    <div id="email-error" class="q-hint" style="color: var(--danger); margin-top: 6px;"></div>
+
+    <div class="row">
+      <button id="start-btn">Empezar</button>
+    </div>
+  </section>
+
+  <!-- SECTION: form (timer + 10 preguntas) -->
+  <section id="form-section" class="hidden">
+    <div class="timer-bar" id="timer-bar">
+      <span>Tiempo restante</span>
+      <span class="clock" id="clock">30:00</span>
+    </div>
+    <div id="questions"></div>
+    <div class="row" style="margin-top: 24px;">
+      <button id="submit-btn">Enviar respuestas</button>
+      <span id="submit-status" class="q-hint" style="align-self: center;"></span>
+    </div>
+  </section>
+
+  <!-- SECTION: success -->
+  <section id="success-section" class="hidden">
+    <div class="success-box">
+      <h2>✓ Respuestas recibidas</h2>
+      <p style="color: var(--text);">Gracias por completar la prueba. Revisaremos tus respuestas y te contactaremos pronto.</p>
+      <p style="font-size: 13px;">Puedes cerrar esta pestaña.</p>
+    </div>
+  </section>
+
+  <!-- SECTION: error fallback -->
+  <section id="error-section" class="hidden">
+    <div class="error-box">
+      <h3>No pudimos enviar tus respuestas automáticamente</h3>
+      <p>Por favor, copia el siguiente texto y envíanoslo por email. Tus respuestas no se pierden.</p>
+      <textarea id="error-payload" readonly></textarea>
+      <div class="row">
+        <button id="copy-btn" class="ghost">Copiar respuestas</button>
+        <a id="mailto-link" href="#"><button>Abrir email</button></a>
+        <button id="retry-btn" class="ghost">Reintentar envío</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-note">Duppla · Prueba CS Analyst</div>
+</div>
+
+<script>
+(() => {
+  // ========== Config ==========
+  const WEBHOOK_URL = 'https://n8n.duppla.co/webhook/prueba-cs-analyst-submit';
+  const FALLBACK_EMAIL = 'ccarlosmlara97@gmail.com';
+  const DURATION_MS = 30 * 60 * 1000; // 30 min
+  const STORAGE_KEY = 'prueba-cs-analyst-v1';
+  const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+  const QUESTIONS = [
+    { id: 'q1', title: '1. Caso cerradura', text: 'Un cliente lleva 3 días sin poder entrar a su inmueble porque la cerradura no abre. Ya habló con Property y le dijeron que lo escalan. Te escribe molesto. Tienes 5 min antes de otra reunión. ¿Qué haces exactamente?' },
+    { id: 'q2', title: '2. Organización del día', text: 'Recibes 8 casos nuevos hoy + 15 pendientes de ayer + onboarding de 2 clientes nuevos esta semana. Son las 9am. Describe cómo organizas tu día.' },
+    { id: 'q3', title: '3. Promesa no escrita', text: 'Un cliente insiste en que Duppla le prometió algo que no está en el contrato. No hay registro de esa promesa. Está muy molesto. ¿Cómo procedes?' },
+    { id: 'q4', title: '4. Coordinación cross-área', text: 'Tienes que coordinar con Property, Contabilidad y Legal para activar la facturación de un cliente. Cada área te dice que "falta info de la otra". ¿Qué haces?' },
+    { id: 'q5', title: '5. Mensaje al cliente (máx 5 líneas)', text: 'Redacta el mensaje que le mandarías a un cliente que aún no entiende por qué su primera factura llegó con un valor distinto al que esperaba.' },
+    { id: 'q6', title: '6. Proceso que automatizaste', text: 'Describe un proceso repetitivo que hayas automatizado o documentado en tu último rol. ¿Qué hiciste, cómo, y cuál fue el resultado?' },
+    { id: 'q7', title: '7. Cohorte de marzo', text: 'Tu jefe te pide "que revises cómo va la cohorte de marzo". No te da más contexto. ¿Qué haces en los próximos 30 min?' },
+    { id: 'q8', title: '8. Info equivocada', text: 'Te diste cuenta de que le diste info equivocada a un cliente hace 2 días y ya tomó decisiones con esa info. ¿Qué haces?' },
+    { id: 'q9', title: '9. Trade-off de 1 hora', text: 'Tienes 1 hora. Opción A: cerrar 5 casos fáciles. Opción B: resolver 1 caso complejo de un cliente con riesgo de churn. ¿Qué eliges y por qué?' },
+    { id: 'q10', title: '10. Situación frustrante', text: '¿Cuál ha sido la situación laboral más frustrante que has manejado y cómo la resolviste? Sé específica: qué hiciste tú, qué no funcionó, qué aprendiste.' },
+  ];
+
+  // ========== State helpers ==========
+  const state = {
+    get: () => {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+      catch { return {}; }
+    },
+    set: (patch) => {
+      const cur = state.get();
+      const next = { ...cur, ...patch };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      return next;
+    },
+  };
+
+  const uuidV4 = () => {
+    if (crypto && crypto.randomUUID) return crypto.randomUUID();
+    // fallback
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+  };
+
+  // ========== DOM refs ==========
+  const $ = (id) => document.getElementById(id);
+  const welcomeSec = $('welcome-section');
+  const formSec = $('form-section');
+  const successSec = $('success-section');
+  const errorSec = $('error-section');
+  const emailInput = $('email');
+  const emailErr = $('email-error');
+  const startBtn = $('start-btn');
+  const submitBtn = $('submit-btn');
+  const submitStatus = $('submit-status');
+  const questionsEl = $('questions');
+  const clockEl = $('clock');
+  const timerBar = $('timer-bar');
+  const errorPayload = $('error-payload');
+  const copyBtn = $('copy-btn');
+  const mailtoLink = $('mailto-link');
+  const retryBtn = $('retry-btn');
+
+  // ========== Initial state ==========
+  const s = state.get();
+  if (s.submitted) {
+    show(successSec);
+    return;
+  }
+  emailInput.value = s.email || '';
+  if (s.startTime && s.email && s.submission_id) {
+    startForm(false);
+  }
+
+  // ========== Welcome flow ==========
+  startBtn.addEventListener('click', () => {
+    emailErr.textContent = '';
+    const email = (emailInput.value || '').trim();
+    if (!EMAIL_RE.test(email)) {
+      emailErr.textContent = 'Por favor ingresa un email válido.';
+      return;
+    }
+    state.set({
+      email,
+      submission_id: uuidV4(),
+      startTime: new Date().toISOString(),
+      answers: {},
+    });
+    startForm(true);
+  });
+
+  // ========== Form rendering ==========
+  function startForm(first) {
+    const cur = state.get();
+    hide(welcomeSec);
+    show(formSec);
+    renderQuestions(cur.answers || {});
+    startTimer();
+  }
+
+  function renderQuestions(answers) {
+    questionsEl.innerHTML = '';
+    for (const q of QUESTIONS) {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.innerHTML = `
+        <div class="q-title">${escapeHtml(q.title)}</div>
+        <div class="q-hint">${escapeHtml(q.text)}</div>
+        <textarea id="${q.id}" data-qid="${q.id}" rows="5"></textarea>
+        <div class="q-meta">
+          <span><span id="${q.id}-count">0</span> caracteres</span>
+          <span id="${q.id}-saved"></span>
+        </div>
+      `;
+      questionsEl.appendChild(card);
+      const ta = card.querySelector('textarea');
+      ta.value = answers[q.id] || '';
+      updateCount(q.id);
+      ta.addEventListener('input', () => updateCount(q.id));
+      ta.addEventListener('blur', () => saveAnswer(q.id, ta.value));
+    }
+  }
+
+  function updateCount(qid) {
+    const ta = document.getElementById(qid);
+    const c = document.getElementById(qid + '-count');
+    if (ta && c) c.textContent = ta.value.length;
+  }
+
+  function saveAnswer(qid, val) {
+    const cur = state.get();
+    const answers = cur.answers || {};
+    answers[qid] = val;
+    state.set({ answers });
+    const tag = document.getElementById(qid + '-saved');
+    if (tag) {
+      tag.textContent = 'Guardado';
+      tag.className = 'saved';
+      setTimeout(() => { tag.textContent = ''; }, 1500);
+    }
+  }
+
+  // ========== Timer ==========
+  let timerInterval = null;
+  function startTimer() {
+    if (timerInterval) clearInterval(timerInterval);
+    tickTimer();
+    timerInterval = setInterval(tickTimer, 1000);
+  }
+  function tickTimer() {
+    const cur = state.get();
+    if (!cur.startTime) return;
+    const start = new Date(cur.startTime).getTime();
+    const end = start + DURATION_MS;
+    const now = Date.now();
+    const remaining = Math.max(0, end - now);
+    const mm = Math.floor(remaining / 60000);
+    const ss = Math.floor((remaining % 60000) / 1000);
+    clockEl.textContent = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+    timerBar.classList.remove('warn', 'danger');
+    if (remaining <= 5 * 60 * 1000 && remaining > 60 * 1000) timerBar.classList.add('warn');
+    else if (remaining <= 60 * 1000) timerBar.classList.add('danger');
+    if (remaining === 0) {
+      clearInterval(timerInterval);
+      submitStatus.textContent = 'Tiempo agotado · enviando...';
+      flushTextareasToState();
+      sendSubmission(true);
+    }
+  }
+
+  // ========== Submit ==========
+  submitBtn.addEventListener('click', () => {
+    flushTextareasToState();
+    sendSubmission(false);
+  });
+
+  function flushTextareasToState() {
+    const cur = state.get();
+    const answers = cur.answers || {};
+    for (const q of QUESTIONS) {
+      const ta = document.getElementById(q.id);
+      if (ta) answers[q.id] = ta.value;
+    }
+    state.set({ answers });
+  }
+
+  function buildPayload() {
+    const cur = state.get();
+    const answers = cur.answers || {};
+    const payload = {
+      email: cur.email,
+      submission_id: cur.submission_id,
+      start_time: cur.startTime,
+      end_time: new Date().toISOString(),
+      user_agent: navigator.userAgent,
+    };
+    for (const q of QUESTIONS) payload[q.id] = answers[q.id] || '';
+    return payload;
+  }
+
+  async function sendSubmission(isAutoTimeout) {
+    submitBtn.disabled = true;
+    submitStatus.textContent = 'Enviando...';
+    const payload = buildPayload();
+    try {
+      const res = await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain' },
+        body: JSON.stringify(payload),
+      });
+      let ok = res.ok;
+      let data = null;
+      try { data = await res.json(); } catch {}
+      if (!ok || (data && data.ok === false)) {
+        throw new Error((data && data.error) || `HTTP ${res.status}`);
+      }
+      state.set({ submitted: true, end_time: payload.end_time });
+      hide(formSec);
+      show(successSec);
+      if (timerInterval) clearInterval(timerInterval);
+    } catch (err) {
+      submitBtn.disabled = false;
+      submitStatus.textContent = '';
+      showErrorFallback(payload, err);
+    }
+  }
+
+  function showErrorFallback(payload, err) {
+    hide(formSec);
+    show(errorSec);
+    const text = JSON.stringify(payload, null, 2);
+    errorPayload.value = text;
+    const subject = encodeURIComponent(`Prueba CS Analyst · ${payload.email}`);
+    const body = encodeURIComponent(`Mis respuestas (pega esto tal cual):\n\n${text}`);
+    mailtoLink.href = `mailto:${FALLBACK_EMAIL}?subject=${subject}&body=${body}`;
+  }
+
+  copyBtn.addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(errorPayload.value);
+      copyBtn.textContent = '✓ Copiado';
+      setTimeout(() => { copyBtn.textContent = 'Copiar respuestas'; }, 2000);
+    } catch {
+      errorPayload.select();
+      document.execCommand('copy');
+    }
+  });
+
+  retryBtn.addEventListener('click', () => {
+    hide(errorSec);
+    show(formSec);
+    sendSubmission(false);
+  });
+
+  // ========== Utils ==========
+  function show(el) { el.classList.remove('hidden'); }
+  function hide(el) { el.classList.add('hidden'); }
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+})();
+</script>
+</body>
+</html>
