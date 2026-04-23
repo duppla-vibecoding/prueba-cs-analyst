@@ -57,7 +57,6 @@
   .timer-bar .clock { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 18px; }
   .timer-bar.warn .clock { color: var(--warn); }
   .timer-bar.danger .clock { color: var(--danger); }
-  .timer-bar.none { background: var(--surface-2); color: var(--text-dim); }
   .hidden { display: none; }
   .intro-list { padding-left: 20px; color: var(--text-dim); }
   .intro-list li { margin-bottom: 6px; }
@@ -72,8 +71,9 @@
   .statement { display: flex; align-items: flex-start; gap: 10px; background: var(--surface-2); padding: 14px; border-radius: 8px; margin: 16px 0; border: 1px solid var(--border); }
   .statement input[type=checkbox] { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--accent); flex-shrink: 0; }
   .statement label { margin: 0; font-weight: 400; color: var(--text); font-size: 14px; }
-  .section-divider { margin: 40px 0 20px; padding-top: 24px; border-top: 1px solid var(--border); }
-  .section-tag { display: inline-block; background: var(--accent); color: white; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; letter-spacing: 0.5px; }
+  .section-tag { display: inline-block; background: var(--accent); color: white; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; letter-spacing: 0.5px; margin-right: 6px; }
+  .progress { font-size: 12px; color: var(--text-dim); letter-spacing: 0.5px; }
+  .toast { background: #2d2815; border: 1px solid var(--warn); color: var(--text); padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
   @media (max-width: 600px) { .wrap { padding: 16px; } h1 { font-size: 20px; } }
 </style>
 </head>
@@ -88,10 +88,11 @@
     <h2>Cómo funciona</h2>
     <ul class="intro-list">
       <li><strong>Parte 1:</strong> 10 preguntas abiertas con <strong>15 min de cronómetro</strong>.</li>
-      <li><strong>Parte 2:</strong> 2 situaciones de cliente para redactar mensajes. <strong>Sin cronómetro.</strong></li>
-      <li><strong>Parte 3:</strong> 3 preguntas sobre cómo usaste herramientas de AI.</li>
-      <li>Respuestas genéricas, sin detalle concreto, descalifican — uses AI o no.</li>
-      <li>Cuando termines, haz click en "Enviar". Si se agota el tiempo de la Parte 1, pasa automático a la Parte 2.</li>
+      <li><strong>Parte 2:</strong> 2 situaciones de cliente, <strong>sin cronómetro</strong>.</li>
+      <li><strong>Parte 3:</strong> 3 preguntas sobre uso de AI.</li>
+      <li>Avanzas parte por parte. <strong>No podrás volver a una parte anterior.</strong></li>
+      <li>Cuando se agote el tiempo de la Parte 1, pasarás automáticamente a la Parte 2.</li>
+      <li>Respuestas genéricas, sin detalle concreto, descalifican.</li>
     </ul>
 
     <div class="statement">
@@ -109,53 +110,61 @@
     </div>
   </section>
 
-  <!-- SECTION: form (part 1 + part 2 + part 3) -->
-  <section id="form-section" class="hidden">
+  <!-- SECTION: part 1 -->
+  <section id="part1-section" class="hidden">
     <div class="timer-bar" id="timer-bar">
       <span id="timer-label">Parte 1 · Tiempo restante</span>
       <span class="clock" id="clock">15:00</span>
     </div>
-    <div id="part1-block">
-      <div class="section-tag">PARTE 1</div>
-      <h2 style="margin-top: 8px;">10 preguntas abiertas</h2>
-      <div id="questions"></div>
+    <span class="section-tag">PARTE 1</span><span class="progress">Parte 1 de 3</span>
+    <h2 style="margin-top: 8px;">10 preguntas abiertas</h2>
+    <div id="questions"></div>
+    <div class="row" style="margin-top: 24px;">
+      <button id="continue-p2-btn">Continuar a Parte 2 →</button>
+      <span class="q-hint" style="margin-left: 4px;">Puedes continuar antes de que se agote el tiempo.</span>
+    </div>
+  </section>
+
+  <!-- SECTION: part 2 -->
+  <section id="part2-section" class="hidden">
+    <div id="part2-toast"></div>
+    <span class="section-tag">PARTE 2</span><span class="progress">Parte 2 de 3</span>
+    <h2 style="margin-top: 8px;">Mensajes al cliente</h2>
+    <p>Sin cronómetro. Tómate el tiempo que necesites. Puedes usar AI — cuéntanos cómo.</p>
+    <div id="situations"></div>
+    <div class="row" style="margin-top: 24px;">
+      <button id="continue-p3-btn">Continuar a Parte 3 →</button>
+    </div>
+  </section>
+
+  <!-- SECTION: part 3 -->
+  <section id="part3-section" class="hidden">
+    <span class="section-tag">PARTE 3</span><span class="progress">Parte 3 de 3</span>
+    <h2 style="margin-top: 8px;">Sobre el uso de AI</h2>
+    <p>Responde con honestidad. Premiamos el uso criterioso, no castigamos el uso declarado.</p>
+
+    <div class="card">
+      <label for="ai-used">¿Usaste AI para responder esta prueba?</label>
+      <select id="ai-used">
+        <option value="">Selecciona…</option>
+        <option value="No">No</option>
+        <option value="Parcialmente">Parcialmente</option>
+        <option value="Sí">Sí</option>
+      </select>
     </div>
 
-    <div id="part2-block" class="section-divider">
-      <div class="section-tag">PARTE 2</div>
-      <h2 style="margin-top: 8px;">Mensajes al cliente</h2>
-      <p>Sin cronómetro. Tómate el tiempo que necesites. Puedes usar AI — cuéntanos cómo.</p>
-      <div id="situations"></div>
+    <div class="card">
+      <label for="ai-where">Si usaste AI, ¿en cuáles preguntas exactamente y cómo la usaste?</label>
+      <div class="sublabel">Ej: "En Q5 le pedí a Gemini que estructurara la idea, luego reescribí el tono porque sonaba muy formal."</div>
+      <textarea id="ai-where" rows="4"></textarea>
     </div>
 
-    <div id="part3-block" class="section-divider">
-      <div class="section-tag">PARTE 3</div>
-      <h2 style="margin-top: 8px;">Sobre el uso de AI</h2>
-      <p>Responde con honestidad. Premiamos el uso criterioso, no castigamos el uso declarado.</p>
-
-      <div class="card">
-        <label for="ai-used">¿Usaste AI para responder esta prueba?</label>
-        <select id="ai-used">
-          <option value="">Selecciona…</option>
-          <option value="No">No</option>
-          <option value="Parcialmente">Parcialmente</option>
-          <option value="Sí">Sí</option>
-        </select>
-      </div>
-
-      <div class="card">
-        <label for="ai-where">Si usaste AI, ¿en cuáles preguntas exactamente y cómo la usaste?</label>
-        <div class="sublabel">Ej: "En Q5 le pedí a Gemini que estructurara la idea, luego reescribí el tono porque sonaba muy formal."</div>
-        <textarea id="ai-where" rows="4"></textarea>
-      </div>
-
-      <div class="card">
-        <label for="ai-mine-vs-ai">¿Qué parte de tus respuestas es originalmente tuya y qué parte es AI?</label>
-        <textarea id="ai-mine-vs-ai" rows="3"></textarea>
-      </div>
+    <div class="card">
+      <label for="ai-mine-vs-ai">¿Qué parte de tus respuestas es originalmente tuya y qué parte es AI?</label>
+      <textarea id="ai-mine-vs-ai" rows="3"></textarea>
     </div>
 
-    <div class="row" style="margin-top: 32px;">
+    <div class="row" style="margin-top: 24px;">
       <button id="submit-btn">Enviar todo</button>
       <span id="submit-status" class="q-hint"></span>
     </div>
@@ -195,6 +204,9 @@
   const DURATION_MS = 15 * 60 * 1000; // 15 min para Parte 1
   const STORAGE_KEY = 'prueba-cs-analyst-v2';
   const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+  const MAX_ACTIVE_SEC = 3600; // cap para que no corra forever
+
+  const STEPS = { WELCOME: 'welcome', P1: 'p1', P2: 'p2', P3: 'p3' };
 
   const QUESTIONS = [
     { id: 'q1', title: '1. Cliente esperando otro equipo', text: 'Un cliente lleva 3 días esperando la resolución de un problema cuya solución depende de otro equipo interno. Te escribe molesto. Tienes 5 minutos antes de otra reunión. ¿Qué haces exactamente en esos 5 minutos — y qué haces después?' },
@@ -239,6 +251,8 @@
       return next;
     },
   };
+  function setStep(step) { state.set({ current_step: step }); }
+  function getStep() { return state.get().current_step || STEPS.WELCOME; }
 
   const uuidV4 = () => {
     if (crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -248,24 +262,22 @@
     });
   };
 
-  // ========== Metrics (silent instrumentation) ==========
-  const metrics = {
-    paste_events: 0,
-    tab_switches: 0,
-    active_time_seconds: 0,
-  };
+  // ========== Metrics ==========
+  const metrics = { paste_events: 0, tab_switches: 0, active_time_seconds: 0 };
   let activeIntervalId = null;
   let tabVisible = true;
+  let pasteListenerAttached = false;
+  let aiListenersAttached = false;
+  let situationsRendered = false;
+  let questionsRendered = false;
+
   function tickActive() {
+    if (metrics.active_time_seconds >= MAX_ACTIVE_SEC) return;
     if (tabVisible && document.hasFocus()) metrics.active_time_seconds += 1;
   }
   document.addEventListener('visibilitychange', () => {
-    if (document.hidden) {
-      tabVisible = false;
-      metrics.tab_switches += 1;
-    } else {
-      tabVisible = true;
-    }
+    if (document.hidden) { tabVisible = false; metrics.tab_switches += 1; }
+    else { tabVisible = true; }
     persistMetrics();
   });
   window.addEventListener('blur', () => { tabVisible = false; });
@@ -274,9 +286,7 @@
     if (activeIntervalId) return;
     activeIntervalId = setInterval(() => { tickActive(); persistMetrics(); }, 1000);
   }
-  function persistMetrics() {
-    state.set({ metrics: { ...metrics } });
-  }
+  function persistMetrics() { state.set({ metrics: { ...metrics } }); }
   function restoreMetrics() {
     const s = state.get();
     if (s.metrics) {
@@ -285,17 +295,32 @@
       metrics.active_time_seconds = s.metrics.active_time_seconds || 0;
     }
   }
+  function attachGlobalPasteTracker() {
+    if (pasteListenerAttached) return;
+    pasteListenerAttached = true;
+    document.addEventListener('paste', (e) => {
+      const t = e.target;
+      if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
+        metrics.paste_events += 1;
+        persistMetrics();
+      }
+    });
+  }
 
   // ========== DOM refs ==========
   const $ = (id) => document.getElementById(id);
   const welcomeSec = $('welcome-section');
-  const formSec = $('form-section');
+  const part1Sec = $('part1-section');
+  const part2Sec = $('part2-section');
+  const part3Sec = $('part3-section');
   const successSec = $('success-section');
   const errorSec = $('error-section');
   const emailInput = $('email');
   const emailErr = $('email-error');
   const statementCb = $('statement-cb');
   const startBtn = $('start-btn');
+  const continueP2Btn = $('continue-p2-btn');
+  const continueP3Btn = $('continue-p3-btn');
   const submitBtn = $('submit-btn');
   const submitStatus = $('submit-status');
   const questionsEl = $('questions');
@@ -303,30 +328,54 @@
   const clockEl = $('clock');
   const timerBar = $('timer-bar');
   const timerLabel = $('timer-label');
+  const part2Toast = $('part2-toast');
   const errorPayload = $('error-payload');
   const copyBtn = $('copy-btn');
   const mailtoLink = $('mailto-link');
   const retryBtn = $('retry-btn');
 
-  // ========== Initial ==========
+  const ALL_SECTIONS = [welcomeSec, part1Sec, part2Sec, part3Sec, successSec, errorSec];
+  function hideAll() { ALL_SECTIONS.forEach(s => s.classList.add('hidden')); }
+  function show(el) { el.classList.remove('hidden'); }
+  function hide(el) { el.classList.add('hidden'); }
+
+  // ========== Initial / Resume ==========
   restoreMetrics();
-  const s0 = state.get();
-  if (s0.submitted) {
-    show(successSec);
-    return;
-  }
-  emailInput.value = s0.email || '';
-  statementCb.checked = !!s0.statement_accepted;
-  if (s0.startTime && s0.email && s0.submission_id && s0.statement_accepted) {
-    startForm();
+  (function bootstrap() {
+    const s0 = state.get();
+    if (s0.submitted) { hideAll(); show(successSec); return; }
+    emailInput.value = s0.email || '';
+    statementCb.checked = !!s0.statement_accepted;
+    if (s0.startTime && s0.email && s0.submission_id && s0.statement_accepted) {
+      resumeSession();
+    } else {
+      hideAll(); show(welcomeSec);
+    }
+  })();
+
+  function resumeSession() {
+    const s = state.get();
+    const expired = s.startTime && Date.now() >= new Date(s.startTime).getTime() + DURATION_MS;
+    const step = s.current_step || STEPS.P1;
+    if (step === STEPS.P3) { enterPart3(); return; }
+    if (step === STEPS.P2) { enterPart2(); return; }
+    if (expired) { enterPart2({ reason: 'timeout_on_resume' }); return; }
+    enterPart1();
   }
 
-  // ========== Welcome flow ==========
+  // ========== Welcome / Start ==========
   startBtn.addEventListener('click', () => {
+    if (startBtn.disabled) return;
     emailErr.textContent = '';
     const email = (emailInput.value || '').trim();
     if (!EMAIL_RE.test(email)) { emailErr.textContent = 'Por favor ingresa un email válido.'; return; }
     if (!statementCb.checked) { emailErr.textContent = 'Debes aceptar el compromiso para continuar.'; return; }
+    const existing = state.get();
+    if (existing.submission_id && existing.startTime && existing.email && !existing.submitted) {
+      const ok = confirm('Ya tienes una prueba en curso en este navegador. ¿Continuar la sesión existente?\n\n(OK = continuar · Cancelar = empezar una nueva, se pierde la anterior)');
+      if (ok) { resumeSession(); return; }
+    }
+    metrics.paste_events = 0; metrics.tab_switches = 0; metrics.active_time_seconds = 0;
     state.set({
       email,
       submission_id: uuidV4(),
@@ -335,23 +384,33 @@
       answers: {},
       p2: {},
       ai: {},
+      current_step: STEPS.P1,
+      metrics: { paste_events: 0, tab_switches: 0, active_time_seconds: 0 },
+      submitted: false,
     });
-    startForm();
+    enterPart1();
   });
 
-  function startForm() {
-    const cur = state.get();
-    hide(welcomeSec);
-    show(formSec);
-    renderQuestions(cur.answers || {});
-    renderSituations(cur.p2 || {});
-    restoreAiFields(cur.ai || {});
-    startTimer();
+  // ========== Enter Part 1 ==========
+  function enterPart1() {
+    startBtn.disabled = true;
+    setStep(STEPS.P1);
+    hideAll(); show(part1Sec);
+    if (!questionsRendered) { renderQuestions(state.get().answers || {}); questionsRendered = true; }
+    else { refillQuestions(state.get().answers || {}); }
     startMetricsTimer();
     attachGlobalPasteTracker();
+    // Check if already expired on resume
+    const s = state.get();
+    const start = s.startTime ? new Date(s.startTime).getTime() : Date.now();
+    if (Date.now() >= start + DURATION_MS) {
+      lockPart1();
+      enterPart2({ reason: 'timeout_on_resume' });
+      return;
+    }
+    startTimer();
   }
 
-  // ========== Render ==========
   function renderQuestions(answers) {
     questionsEl.innerHTML = '';
     for (const q of QUESTIONS) {
@@ -372,6 +431,42 @@
       updateCount(q.id);
       ta.addEventListener('input', () => updateCount(q.id));
       ta.addEventListener('blur', () => saveAnswer(q.id, ta.value));
+    }
+  }
+  function refillQuestions(answers) {
+    for (const q of QUESTIONS) {
+      const ta = document.getElementById(q.id);
+      if (ta) { ta.value = answers[q.id] || ''; updateCount(q.id); }
+    }
+  }
+  function lockPart1() {
+    for (const q of QUESTIONS) {
+      const ta = document.getElementById(q.id);
+      if (ta) ta.setAttribute('readonly', 'readonly');
+    }
+  }
+
+  // ========== Enter Part 2 ==========
+  function enterPart2(opts) {
+    opts = opts || {};
+    // Flush P1 inputs into state before leaving
+    if (questionsRendered) {
+      for (const q of QUESTIONS) {
+        const ta = document.getElementById(q.id);
+        if (ta) saveAnswer(q.id, ta.value);
+      }
+    }
+    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+    setStep(STEPS.P2);
+    hideAll(); show(part2Sec);
+    if (!situationsRendered) { renderSituations(state.get().p2 || {}); situationsRendered = true; }
+    else { refillSituations(state.get().p2 || {}); }
+    // Toast si viene por timeout
+    part2Toast.innerHTML = '';
+    if (opts.reason === 'timeout') {
+      part2Toast.innerHTML = '<div class="toast">Se agotó el tiempo de la Parte 1. Continuando con la Parte 2.</div>';
+    } else if (opts.reason === 'timeout_on_resume') {
+      part2Toast.innerHTML = '<div class="toast">El tiempo de la Parte 1 ya había terminado. Continúas con la Parte 2.</div>';
     }
   }
 
@@ -404,11 +499,45 @@
       taMeta.addEventListener('blur', () => saveP2(sit.metaField, taMeta.value));
     }
   }
+  function refillSituations(p2) {
+    for (const sit of SITUATIONS) {
+      const taMsg = document.getElementById(sit.msgField);
+      const taMeta = document.getElementById(sit.metaField);
+      if (taMsg) { taMsg.value = p2[sit.msgField] || ''; updateCount(sit.msgField); }
+      if (taMeta) { taMeta.value = p2[sit.metaField] || ''; updateCount(sit.metaField); }
+    }
+  }
 
-  function restoreAiFields(ai) {
+  continueP2Btn.addEventListener('click', () => {
+    if (continueP2Btn.disabled) return;
+    continueP2Btn.disabled = true;
+    enterPart2();
+    setTimeout(() => { continueP2Btn.disabled = false; }, 500);
+  });
+
+  // ========== Enter Part 3 ==========
+  function enterPart3() {
+    // Flush P2 inputs before leaving
+    if (situationsRendered) {
+      for (const sit of SITUATIONS) {
+        const taMsg = document.getElementById(sit.msgField);
+        const taMeta = document.getElementById(sit.metaField);
+        if (taMsg) saveP2(sit.msgField, taMsg.value);
+        if (taMeta) saveP2(sit.metaField, taMeta.value);
+      }
+    }
+    setStep(STEPS.P3);
+    hideAll(); show(part3Sec);
+    attachAiListeners();
+    const ai = state.get().ai || {};
     $('ai-used').value = ai.ai_used || '';
     $('ai-where').value = ai.ai_where || '';
     $('ai-mine-vs-ai').value = ai.ai_mine_vs_ai || '';
+  }
+
+  function attachAiListeners() {
+    if (aiListenersAttached) return;
+    aiListenersAttached = true;
     ['ai-used','ai-where','ai-mine-vs-ai'].forEach(id => {
       $(id).addEventListener('change', saveAiFields);
       $(id).addEventListener('blur', saveAiFields);
@@ -422,12 +551,19 @@
     }});
   }
 
+  continueP3Btn.addEventListener('click', () => {
+    if (continueP3Btn.disabled) return;
+    continueP3Btn.disabled = true;
+    enterPart3();
+    setTimeout(() => { continueP3Btn.disabled = false; }, 500);
+  });
+
+  // ========== Shared save / count helpers ==========
   function updateCount(id) {
     const ta = document.getElementById(id);
     const c = document.getElementById(id + '-count');
     if (ta && c) c.textContent = ta.value.length;
   }
-
   function saveAnswer(qid, val) {
     const cur = state.get();
     const answers = cur.answers || {};
@@ -447,17 +583,6 @@
     if (tag) { tag.textContent = 'Guardado'; tag.className = 'saved'; setTimeout(() => { tag.textContent = ''; }, 1500); }
   }
 
-  // ========== Paste tracker (global on any textarea/input) ==========
-  function attachGlobalPasteTracker() {
-    document.addEventListener('paste', (e) => {
-      const t = e.target;
-      if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
-        metrics.paste_events += 1;
-        persistMetrics();
-      }
-    });
-  }
-
   // ========== Timer (Part 1 only) ==========
   let timerInterval = null;
   let part1Expired = false;
@@ -475,15 +600,9 @@
     const remaining = Math.max(0, end - now);
     if (remaining <= 0 && !part1Expired) {
       part1Expired = true;
-      clearInterval(timerInterval);
-      timerBar.className = 'timer-bar none';
-      timerLabel.textContent = 'Parte 1 cerrada · continúa con Parte 2 y 3';
-      clockEl.textContent = '00:00';
-      // Lock part 1 textareas
-      for (const q of QUESTIONS) {
-        const ta = document.getElementById(q.id);
-        if (ta) ta.setAttribute('readonly', 'readonly');
-      }
+      clearInterval(timerInterval); timerInterval = null;
+      lockPart1();
+      enterPart2({ reason: 'timeout' });
       return;
     }
     const mm = Math.floor(remaining / 60000);
@@ -495,24 +614,23 @@
   }
 
   // ========== Submit ==========
-  submitBtn.addEventListener('click', () => {
-    flushToState();
-    sendSubmission();
-  });
-
   function flushToState() {
     const cur = state.get();
     const answers = cur.answers || {};
-    for (const q of QUESTIONS) {
-      const ta = document.getElementById(q.id);
-      if (ta) answers[q.id] = ta.value;
+    if (questionsRendered) {
+      for (const q of QUESTIONS) {
+        const ta = document.getElementById(q.id);
+        if (ta) answers[q.id] = ta.value;
+      }
     }
     const p2 = cur.p2 || {};
-    for (const sit of SITUATIONS) {
-      const taMsg = document.getElementById(sit.msgField);
-      const taMeta = document.getElementById(sit.metaField);
-      if (taMsg) p2[sit.msgField] = taMsg.value;
-      if (taMeta) p2[sit.metaField] = taMeta.value;
+    if (situationsRendered) {
+      for (const sit of SITUATIONS) {
+        const taMsg = document.getElementById(sit.msgField);
+        const taMeta = document.getElementById(sit.metaField);
+        if (taMsg) p2[sit.msgField] = taMsg.value;
+        if (taMeta) p2[sit.metaField] = taMeta.value;
+      }
     }
     state.set({ answers, p2 });
     saveAiFields();
@@ -546,9 +664,15 @@
     return payload;
   }
 
-  async function sendSubmission() {
+  submitBtn.addEventListener('click', () => {
+    if (submitBtn.disabled) return;
     submitBtn.disabled = true;
     submitStatus.textContent = 'Enviando...';
+    flushToState();
+    sendSubmission();
+  });
+
+  async function sendSubmission() {
     const payload = buildPayload();
     try {
       const res = await fetch(WEBHOOK_URL, {
@@ -562,10 +686,9 @@
         throw new Error((data && data.error) || `HTTP ${res.status}`);
       }
       state.set({ submitted: true, end_time: payload.end_time });
-      hide(formSec);
-      show(successSec);
-      if (timerInterval) clearInterval(timerInterval);
-      if (activeIntervalId) clearInterval(activeIntervalId);
+      hideAll(); show(successSec);
+      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+      if (activeIntervalId) { clearInterval(activeIntervalId); activeIntervalId = null; }
     } catch (err) {
       submitBtn.disabled = false;
       submitStatus.textContent = '';
@@ -574,8 +697,7 @@
   }
 
   function showErrorFallback(payload, err) {
-    hide(formSec);
-    show(errorSec);
+    hideAll(); show(errorSec);
     const text = JSON.stringify(payload, null, 2);
     errorPayload.value = text;
     const subject = encodeURIComponent(`Prueba CS Analyst · ${payload.email}`);
@@ -594,14 +716,30 @@
     }
   });
   retryBtn.addEventListener('click', () => {
-    hide(errorSec);
-    show(formSec);
+    if (retryBtn.disabled) return;
+    retryBtn.disabled = true;
+    hideAll(); show(part3Sec);
+    submitBtn.disabled = true;
+    submitStatus.textContent = 'Reintentando...';
+    flushToState();
     sendSubmission();
+    setTimeout(() => { retryBtn.disabled = false; }, 1000);
+  });
+
+  // ========== Cross-tab sync ==========
+  window.addEventListener('storage', (e) => {
+    if (e.key !== STORAGE_KEY) return;
+    try {
+      const v = JSON.parse(e.newValue || '{}');
+      if (v.submitted) {
+        hideAll(); show(successSec);
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        if (activeIntervalId) { clearInterval(activeIntervalId); activeIntervalId = null; }
+      }
+    } catch {}
   });
 
   // ========== Utils ==========
-  function show(el) { el.classList.remove('hidden'); }
-  function hide(el) { el.classList.add('hidden'); }
   function escapeHtml(s) {
     return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   }
