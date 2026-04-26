@@ -13,104 +13,78 @@
     --text: #e6e8ee;
     --text-dim: #9099a8;
     --accent: #4f8cff;
-    --accent-hover: #6aa0ff;
+    --good: #4cd5a0;
+    --bad: #ff6b6b;
     --warn: #ffb454;
-    --danger: #ff6b6b;
-    --ok: #4cd5a0;
   }
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif; line-height: 1.5; }
-  .wrap { max-width: 760px; margin: 0 auto; padding: 24px 20px 80px; }
-  h1 { font-size: 24px; margin: 0 0 4px; }
-  h2 { font-size: 18px; margin: 28px 0 10px; }
-  h3 { font-size: 16px; margin: 20px 0 8px; }
-  p { margin: 0 0 12px; color: var(--text-dim); }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin-bottom: 16px; }
-  .card-sit { background: var(--surface-2); border-left: 3px solid var(--accent); padding: 14px 16px; border-radius: 6px; margin-bottom: 12px; color: var(--text); font-style: italic; }
-  label { display: block; font-weight: 600; margin: 0 0 8px; font-size: 14px; }
-  .sublabel { font-size: 13px; color: var(--text-dim); font-weight: 400; margin-bottom: 6px; }
-  input[type=email], textarea, select {
-    width: 100%; background: var(--surface-2); color: var(--text); border: 1px solid var(--border);
-    border-radius: 8px; padding: 12px; font-size: 15px; font-family: inherit; line-height: 1.5;
-    transition: border-color .15s;
-  }
-  input[type=email]:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
-  textarea { min-height: 120px; resize: vertical; }
-  .q-title { font-weight: 600; color: var(--text); margin-bottom: 8px; }
-  .q-hint { color: var(--text-dim); font-size: 13px; margin-bottom: 10px; }
-  .q-meta { display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-dim); margin-top: 6px; }
-  .saved { color: var(--ok); }
-  button {
-    background: var(--accent); color: white; border: 0; border-radius: 8px;
-    padding: 12px 20px; font-size: 15px; font-weight: 600; cursor: pointer; transition: background .15s;
-    font-family: inherit;
-  }
-  button:hover { background: var(--accent-hover); }
-  button:disabled { background: #3a3f48; cursor: not-allowed; }
-  button.ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
-  button.ghost:hover { background: var(--surface-2); }
-  .timer-bar {
-    position: sticky; top: 0; background: var(--surface); border-bottom: 1px solid var(--border);
-    padding: 10px 16px; margin: -24px -20px 20px; display: flex; justify-content: space-between;
-    align-items: center; font-size: 14px; z-index: 10;
-  }
-  .timer-bar .clock { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 18px; }
-  .timer-bar.warn .clock { color: var(--warn); }
-  .timer-bar.danger .clock { color: var(--danger); }
+  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif; line-height: 1.55; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 28px 22px 80px; }
+  h1 { font-size: 26px; margin: 0 0 6px; }
+  h2 { font-size: 19px; margin: 24px 0 10px; }
+  h3 { font-size: 16px; margin: 16px 0 8px; }
+  p { margin: 0 0 12px; color: var(--text); }
+  .dim { color: var(--text-dim); }
+  a { color: var(--accent); }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px; margin-bottom: 16px; }
+  .ej-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 22px; margin-bottom: 18px; }
+  .ej-num { display: inline-block; background: var(--accent); color: white; font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 6px; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .ej-title { font-size: 17px; font-weight: 600; margin: 0 0 10px; }
+  .scenario { background: var(--surface-2); border-left: 3px solid var(--accent); padding: 12px 14px; border-radius: 4px; margin: 10px 0 14px; font-size: 14.5px; white-space: pre-wrap; }
+  .ai-quote { background: #1a1f29; border-left: 3px solid var(--text-dim); padding: 12px 14px; border-radius: 4px; margin: 10px 0 14px; font-size: 14px; color: var(--text-dim); font-style: italic; white-space: pre-wrap; }
+  textarea { width: 100%; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: inherit; font-size: 14.5px; min-height: 140px; resize: vertical; line-height: 1.55; }
+  textarea:focus { outline: none; border-color: var(--accent); }
+  input[type="email"] { width: 100%; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-family: inherit; font-size: 15px; }
+  input[type="email"]:focus { outline: none; border-color: var(--accent); }
+  label { display: block; font-size: 14px; color: var(--text-dim); margin-bottom: 6px; }
+  button { background: var(--accent); color: white; border: none; padding: 12px 22px; border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer; }
+  button:hover { background: #3d77df; }
+  button:disabled { background: var(--surface-2); color: var(--text-dim); cursor: not-allowed; }
+  button.ghost { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+  button.ghost:hover { background: var(--border); }
+  .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-top: 18px; }
   .hidden { display: none; }
-  .intro-list { padding-left: 20px; color: var(--text-dim); }
-  .intro-list li { margin-bottom: 6px; }
+  .intro-list { padding-left: 22px; margin: 8px 0 16px; }
+  .intro-list li { margin-bottom: 6px; color: var(--text); }
   .intro-list strong { color: var(--text); }
-  .error-box { background: #2a1d1d; border: 1px solid var(--danger); padding: 16px; border-radius: 8px; margin: 16px 0; }
-  .error-box h3 { margin: 0 0 8px; color: var(--danger); font-size: 16px; }
+  .statement { background: var(--surface-2); border: 1px solid var(--border); padding: 14px 16px; border-radius: 8px; margin: 14px 0; display: flex; gap: 12px; align-items: flex-start; }
+  .statement input { margin-top: 4px; }
+  .statement label { color: var(--text); font-size: 14px; margin: 0; cursor: pointer; }
+  .success-box { background: #15291f; border: 1px solid var(--good); padding: 24px; border-radius: 10px; }
+  .success-box h2 { color: var(--good); margin: 0 0 10px; }
+  .error-box { background: #2a1d1d; border: 1px solid var(--bad); padding: 18px; border-radius: 10px; }
+  .error-box h3 { margin: 0 0 8px; color: var(--bad); }
   .error-box textarea { min-height: 160px; font-family: "SF Mono", Menlo, monospace; font-size: 12px; }
-  .row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; align-items: center; }
-  .success-box { background: #1a2e24; border: 1px solid var(--ok); padding: 20px; border-radius: 8px; }
-  .success-box h2 { color: var(--ok); margin-top: 0; }
-  .footer-note { color: var(--text-dim); font-size: 13px; margin-top: 24px; text-align: center; }
-  .statement { display: flex; align-items: flex-start; gap: 10px; background: var(--surface-2); padding: 14px; border-radius: 8px; margin: 16px 0; border: 1px solid var(--border); }
-  .statement input[type=checkbox] { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--accent); flex-shrink: 0; }
-  .statement label { margin: 0; font-weight: 400; color: var(--text); font-size: 14px; }
-  .section-tag { display: inline-block; background: var(--accent); color: white; font-size: 11px; font-weight: 700; padding: 4px 8px; border-radius: 4px; letter-spacing: 0.5px; margin-right: 6px; }
-  .progress { font-size: 12px; color: var(--text-dim); letter-spacing: 0.5px; }
-  .toast { background: #2d2815; border: 1px solid var(--warn); color: var(--text); padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
-  @media (max-width: 600px) { .wrap { padding: 16px; } h1 { font-size: 20px; } }
+  .footer-note { text-align: center; color: var(--text-dim); font-size: 12.5px; margin-top: 30px; }
+  .submit-status { color: var(--text-dim); font-size: 13.5px; }
+  .warn-banner { background: #2d2815; border: 1px solid var(--warn); color: var(--text); padding: 10px 14px; border-radius: 8px; margin: 12px 0; font-size: 13.5px; }
+  .ej-hint { font-size: 13px; color: var(--text-dim); margin-bottom: 6px; }
+  @media (max-width: 600px) { .wrap { padding: 18px 14px 60px; } h1 { font-size: 22px; } }
 </style>
 </head>
 <body>
 <div class="wrap" id="app">
 
-  <!-- SECTION: welcome -->
+  <!-- WELCOME -->
   <section id="welcome-section" class="card">
     <h1>Prueba CS Analyst · Duppla</h1>
-    <p>Hola. Esta prueba evalúa <strong>cómo piensas</strong>, no qué sabes. Específicamente queremos ver:</p>
+    <p>Hola. Esta prueba es 5 ejercicios cortos. Queremos ver cómo respondes a clientes reales.</p>
+
+    <h2>Qué medimos</h2>
     <ul class="intro-list">
-      <li><strong>Ownership</strong> ante problemas del cliente</li>
-      <li><strong>Empatía</strong> y comunicación con humanos en momentos difíciles</li>
-      <li><strong>Priorización</strong> bajo carga</li>
-      <li><strong>Resolución de problemas</strong> ambiguos sin contexto completo</li>
-      <li><strong>Pensamiento crítico</strong> — saber cuándo confiar en información</li>
-      <li><strong>Integridad</strong> profesional</li>
+      <li><strong>Qué tan rápido entiendes</strong> al humano que te escribe</li>
+      <li><strong>Qué tan claro</strong> respondes</li>
+      <li><strong>Cómo usas AI con criterio</strong> (cuándo confiar y cuándo no)</li>
+      <li><strong>Pensamiento bajo restricción</strong> (decidir con poco tiempo)</li>
     </ul>
 
     <h2>Cómo funciona</h2>
     <ul class="intro-list">
-      <li><strong>10 preguntas abiertas</strong> con un cronómetro de <strong>45 minutos</strong>.</li>
-      <li>Después continúas con unas preguntas cortas adicionales (sin tiempo).</li>
-      <li>Respuestas genéricas, sin detalle concreto, descalifican.</li>
-      <li><strong>No podrás volver a una sección anterior.</strong></li>
+      <li>5 ejercicios. Lees una situación, respondes en el cuadro.</li>
+      <li>Sin cronómetro. Tómate <strong>30 a 40 minutos</strong> aprox. — pero respuestas demasiado largas o demasiado cortas pueden generar dudas distintas.</li>
+      <li><strong>AI permitida y recomendada</strong> (Duppla la usa todos los días). Lo que evaluamos no es si la usas, sino el juicio detrás de tus respuestas.</li>
+      <li>Respuestas genéricas, sin compromiso concreto, descalifican.</li>
     </ul>
-
-    <h2 style="color: var(--warn);">⚠️ Reglas importantes</h2>
-    <ul class="intro-list">
-      <li><strong>Una sola sesión.</strong> Si cierras el navegador o la pestaña, no podrás retomar la prueba.</li>
-      <li>No abras la prueba en varias pestañas a la vez.</li>
-      <li>Si refrescas la página por accidente, tendrás unos segundos para reconectarte.</li>
-      <li>El cronómetro sigue corriendo aunque te ausentes.</li>
-    </ul>
-
-    <h2>Sobre uso de AI</h2>
-    <p>Puedes usar AI (ChatGPT, Gemini, Claude, etc.) si quieres. Al final te preguntaremos cómo y dónde la usaste. <strong>Mentir descalifica.</strong> Respuestas que se sientan genéricas también descalifican — uses AI o no.</p>
 
     <div class="statement">
       <input type="checkbox" id="statement-cb">
@@ -120,102 +94,84 @@
     <h2>Tu email</h2>
     <label for="email">Email de contacto</label>
     <input type="email" id="email" placeholder="tu@email.com" autocomplete="email">
-    <div id="email-error" class="q-hint" style="color: var(--danger); margin-top: 6px;"></div>
+    <div id="email-error" class="dim" style="color: var(--bad); margin-top: 6px; min-height: 18px; font-size: 13px;"></div>
 
-    <div class="row" style="margin-top: 20px;">
+    <div class="row">
       <button id="start-btn">Empezar</button>
     </div>
   </section>
 
-  <!-- SECTION: part 1 (preguntas con timer) -->
-  <section id="part1-section" class="hidden">
-    <div class="timer-bar" id="timer-bar">
-      <span id="timer-label">Tiempo restante</span>
-      <span class="clock" id="clock">45:00</span>
-    </div>
-    <span class="section-tag">PARTE 1</span>
-    <h2 style="margin-top: 8px;">10 preguntas abiertas</h2>
-    <div id="questions"></div>
-    <div class="row" style="margin-top: 24px;">
-      <button id="continue-p2-btn">Continuar →</button>
-      <span class="q-hint" style="margin-left: 4px;">Puedes continuar antes de que se agote el tiempo.</span>
-    </div>
-  </section>
+  <!-- EJERCICIOS -->
+  <section id="exercises-section" class="hidden">
+    <p class="dim" style="margin-bottom: 18px;">5 ejercicios · respuestas se guardan automáticamente</p>
 
-  <!-- SECTION: part 2 (pensamiento crítico vs AI) -->
-  <section id="part2-section" class="hidden">
-    <div id="part2-toast"></div>
-    <span class="section-tag">PARTE 2</span>
-    <h2 style="margin-top: 8px;">Pensamiento crítico</h2>
-    <p>Sin cronómetro. Tómate el tiempo que necesites. Puedes usar AI si quieres — pero estas preguntas miden tu juicio sobre lo que la AI te entrega, no la respuesta de la AI en sí.</p>
-
-    <div class="card">
-      <h3 style="margin-top:0;">2.1 — La IA te recomienda algo, ¿lo seguirías?</h3>
-      <p>Un cliente está estancado en su proceso de compra. Le pides a ChatGPT que redacte un mensaje empático. Esto te entrega:</p>
-      <blockquote style="border-left: 3px solid var(--text-dim); padding: 8px 12px; color: var(--text-dim); margin: 8px 0; font-style: italic;">
-        "Hola estimado cliente, lamentamos profundamente los inconvenientes ocasionados durante este proceso. Su satisfacción es nuestra máxima prioridad y trabajaremos sin descanso para resolver su situación a la brevedad posible. No dude en contactarnos ante cualquier consulta. Quedamos a su disposición."
-      </blockquote>
-      <label for="ai-msg-critique">¿Mandarías este mensaje tal cual? Si no, ¿qué cambiarías y por qué? Sé concreto.</label>
-      <textarea id="ai-msg-critique" rows="5"></textarea>
+    <div class="ej-card">
+      <span class="ej-num">EJERCICIO 1</span>
+      <div class="ej-title">María Clara — el calentador (3era vez)</div>
+      <p>María Clara lleva 8 meses viviendo en su inmueble con Duppla. Te escribe por WhatsApp:</p>
+      <div class="scenario">"Hola, ya es la tercera vez que pido que vengan a revisar el calentador. Llevo 4 días sin ducha caliente. Nadie me dice cuándo viene el técnico. Por favor necesito una respuesta."</div>
+      <div class="ej-hint">Escribe el mensaje exacto que le mandarías de vuelta.</div>
+      <textarea id="e1" placeholder="Tu respuesta..."></textarea>
     </div>
 
-    <div class="card">
-      <h3 style="margin-top:0;">2.2 — Cuándo NO confiar en la IA</h3>
-      <p>Un cliente te pregunta: "¿Cuánto debería pagar de cuota inicial para un apartamento de 280 millones en Bogotá con Duppla?". Le preguntas a ChatGPT y te da una respuesta detallada con porcentajes, plazos y recomendaciones financieras.</p>
-      <label for="ai-trust">¿Le mandarías esa respuesta al cliente directamente? ¿Por qué sí o por qué no? ¿Qué harías en cambio?</label>
-      <textarea id="ai-trust" rows="5"></textarea>
+    <div class="ej-card">
+      <span class="ej-num">EJERCICIO 2</span>
+      <div class="ej-title">Jorge — no entiende renta vs compra</div>
+      <p>Jorge es un cliente nuevo (lleva 2 semanas). Te escribe:</p>
+      <div class="scenario">"Oye no entendí bien lo que me explicaron. O sea yo pago renta todos los meses, pero una parte de eso va a la compra de la casa? Cómo así? No me quedó claro, perdona."</div>
+      <div class="ej-hint">Escribe el mensaje que le mandarías. Tiene que entenderlo.</div>
+      <textarea id="e2" placeholder="Tu respuesta..."></textarea>
     </div>
 
-    <div class="card">
-      <h3 style="margin-top:0;">2.3 — Detectar el error</h3>
-      <p>Le pediste a la IA que resuma la situación de un cliente. Te entregó esto:</p>
-      <blockquote style="border-left: 3px solid var(--text-dim); padding: 8px 12px; color: var(--text-dim); margin: 8px 0; font-style: italic;">
-        "El cliente Juan Pérez está esperando la entrega de su inmueble desde el 15 de marzo. Ha tenido 3 contactos previos con el equipo de operaciones y la última actualización fue hace 2 semanas. Su satisfacción se mantiene alta según los indicadores."
-      </blockquote>
-      <label for="ai-error">¿Qué le pedirías a la IA antes de pasar este resumen a tu jefe? ¿Qué falta o qué te genera dudas?</label>
-      <textarea id="ai-error" rows="5"></textarea>
+    <div class="ej-card">
+      <span class="ej-num">EJERCICIO 3</span>
+      <div class="ej-title">Te diste cuenta del error</div>
+      <p>Te diste cuenta de que le diste información equivocada a un cliente hace 2 días. El cliente ya tomó decisiones con esa info. ¿Qué le escribes?</p>
+      <div class="ej-hint">El mensaje que le mandarías. Sé concreto.</div>
+      <textarea id="e3" placeholder="Tu respuesta..."></textarea>
     </div>
 
-    <div class="row" style="margin-top: 24px;">
-      <button id="continue-p3-btn">Continuar →</button>
+    <div class="ej-card">
+      <span class="ej-num">EJERCICIO 4</span>
+      <div class="ej-title">La hora difícil</div>
+      <p>Tienes 1 hora antes de salir. Tienes que elegir entre:</p>
+      <ul class="intro-list">
+        <li><strong>Opción A:</strong> cerrar 5 casos sencillos pendientes que llevan 2 días esperándote.</li>
+        <li><strong>Opción B:</strong> resolver 1 caso complejo de un cliente importante con riesgo alto de irse.</li>
+      </ul>
+      <div class="ej-hint">¿Qué eliges? Explica tu razonamiento en 3-5 líneas.</div>
+      <textarea id="e4" placeholder="Tu decisión y por qué..."></textarea>
     </div>
-  </section>
 
-  <!-- SECTION: part 3 (situaciones cliente) -->
-  <section id="part3-section" class="hidden">
-    <span class="section-tag">PARTE 3</span>
-    <h2 style="margin-top: 8px;">Mensajes al cliente</h2>
-    <p>Sin cronómetro. Tómate el tiempo que necesites. Puedes usar AI — cuéntanos cómo.</p>
-    <div id="situations"></div>
-    <div class="row" style="margin-top: 24px;">
-      <button id="submit-btn">Enviar todo</button>
-      <span id="submit-status" class="q-hint"></span>
+    <div class="ej-card">
+      <span class="ej-num">EJERCICIO 5</span>
+      <div class="ej-title">Crítica a la respuesta de la IA</div>
+      <p>Para responderle a María Clara (Ejercicio 1), le pediste a ChatGPT un mensaje empático. La IA te entregó esto:</p>
+      <div class="ai-quote">"Hola estimada María Clara, lamentamos profundamente los inconvenientes ocasionados durante este proceso. Su satisfacción es nuestra máxima prioridad y trabajaremos sin descanso para resolver su situación a la brevedad posible. No dude en contactarnos ante cualquier consulta. Quedamos a su disposición."</div>
+      <div class="ej-hint">¿Mandarías este mensaje tal cual? Si no, qué cambiarías y por qué. Sé concreto.</div>
+      <textarea id="e5" placeholder="Tu crítica..."></textarea>
+    </div>
+
+    <div class="row">
+      <button id="submit-btn">Enviar respuestas</button>
+      <span class="submit-status" id="submit-status"></span>
     </div>
   </section>
 
-  <!-- SECTION: success -->
+  <!-- SUCCESS -->
   <section id="success-section" class="hidden">
     <div class="success-box">
       <h2>✓ Respuestas recibidas</h2>
-      <p style="color: var(--text);">Gracias por completar la prueba. Revisaremos tus respuestas y te contactaremos pronto.</p>
-      <p style="font-size: 13px;">Puedes cerrar esta pestaña.</p>
+      <p>Gracias por completar la prueba. La revisaremos y te contactaremos pronto.</p>
+      <p class="dim" style="font-size: 13.5px;">Puedes cerrar esta pestaña.</p>
     </div>
   </section>
 
-  <!-- SECTION: abandoned (game over) -->
-  <section id="abandoned-section" class="hidden">
-    <div class="error-box">
-      <h3>Esta prueba ya fue iniciada y no se puede retomar</h3>
-      <p>Detectamos que cerraste el navegador o la pestaña antes de terminar. Por integridad del proceso, la prueba se cierra cuando esto ocurre.</p>
-      <p>Si crees que es un error (por ejemplo, se cayó internet o se reinició tu computador), escríbele a <strong>fosorno@duppla.co</strong> para coordinar.</p>
-    </div>
-  </section>
-
-  <!-- SECTION: error fallback -->
+  <!-- ERROR FALLBACK -->
   <section id="error-section" class="hidden">
     <div class="error-box">
       <h3>No pudimos enviar tus respuestas automáticamente</h3>
-      <p>Por favor, copia el siguiente texto y envíanoslo por email. Tus respuestas no se pierden.</p>
+      <p>Copia el siguiente texto y mándanoslo por email. Tus respuestas no se pierden.</p>
       <textarea id="error-payload" readonly></textarea>
       <div class="row">
         <button id="copy-btn" class="ghost">Copiar respuestas</button>
@@ -232,45 +188,12 @@
 (() => {
   // ========== Config ==========
   const WEBHOOK_URL = 'https://n8n.duppla.co/webhook/prueba-cs-analyst-submit';
-  // const HEARTBEAT_URL = 'https://n8n.duppla.co/webhook/prueba-cs-heartbeat'; // TODO
   const FALLBACK_EMAIL = 'fosorno@duppla.co';
-  const DURATION_MS = 45 * 60 * 1000;
-  const RESUME_TOLERANCE_MS = 60 * 1000; // 60s sin actividad → game over
-  const STORAGE_KEY = 'prueba-cs-analyst-v2';
+  const STORAGE_KEY = 'prueba-cs-analyst-v3';
   const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
-  const MAX_ACTIVE_SEC = 3600;
+  const MAX_ACTIVE_SEC = 5400; // 90 min cap
 
-  const STEPS = { WELCOME: 'welcome', P1: 'p1', P2: 'p2', P3: 'p3' };
-
-  const QUESTIONS = [
-    { id: 'q1', title: '1. Cliente esperando otro equipo', text: 'Un cliente lleva 3 días esperando la resolución de un problema cuya solución depende de otro equipo interno. Te escribe molesto. Tienes 5 minutos antes de otra reunión. ¿Qué haces exactamente en esos 5 minutos — y qué haces después?' },
-    { id: 'q2', title: '2. Organización del día', text: 'Recibes 8 solicitudes nuevas hoy + 15 pendientes de ayer + 2 clientes nuevos que deben ser activados esta semana. Son las 9am. Describe cómo organizas tu día.' },
-    { id: 'q3', title: '3. Promesa no escrita', text: 'Un cliente insiste en que la empresa le prometió algo que no aparece en ningún registro (contrato, email, chat). Está muy molesto. ¿Cómo procedes?' },
-    { id: 'q4', title: '4. Coordinación entre áreas', text: 'Tienes que coordinar con 3 áreas internas (ej. Operaciones, Finanzas y Legal) para resolver un tema de un cliente. Cada área te dice que está bloqueada esperando info de las otras. ¿Qué haces?' },
-    { id: 'q5', title: '5. Mensaje al cliente (máx 5 líneas)', text: 'Redacta el mensaje que le mandarías a un cliente que no entiende por qué un cobro le llegó con un valor distinto al que esperaba. Tú ya verificaste que el cobro es correcto.' },
-    { id: 'q6', title: '6. Proceso que automatizaste', text: 'Describe un proceso repetitivo que hayas automatizado o documentado en tu último rol. ¿Qué hiciste, cómo, y cuál fue el resultado?' },
-    { id: 'q7', title: '7. Revisar sin contexto', text: 'Tu jefe te pide: "revisa cómo van los clientes que entraron en marzo". No te da más contexto. Son las 9am y tu primera actualización con él es a las 12. ¿Qué haces en esas 3 horas?' },
-    { id: 'q8', title: '8. Info equivocada', text: 'Te diste cuenta de que le diste info equivocada a un cliente hace 2 días y ya tomó decisiones con esa info. ¿Qué haces?' },
-    { id: 'q9', title: '9. Decisión de 1 hora', text: 'Tienes 1 hora. Opción A: cerrar 5 casos sencillos pendientes. Opción B: resolver un caso complejo de un cliente importante con riesgo alto de irse. ¿Qué eliges y por qué?' },
-    { id: 'q10', title: '10. Situación frustrante', text: '¿Cuál ha sido la situación laboral más frustrante que has manejado y cómo la resolviste? Sé específico: qué hiciste tú, qué no funcionó, qué aprendiste.' },
-  ];
-
-  const SITUATIONS = [
-    {
-      id: 's1',
-      msgField: 'p2_msg1',
-      metaField: 'p2_meta1',
-      title: 'Situación A · María Clara',
-      context: 'María Clara lleva 8 meses viviendo en su inmueble con Duppla. Te escribe por WhatsApp:\n\n"Hola, ya es la tercera vez que pido que vengan a revisar el calentador. Llevo 4 días sin ducha caliente. Nadie me dice cuándo viene el técnico. Por favor necesito una respuesta."',
-    },
-    {
-      id: 's2',
-      msgField: 'p2_msg2',
-      metaField: 'p2_meta2',
-      title: 'Situación B · Jorge',
-      context: 'Jorge es un cliente nuevo (lleva 2 semanas). Te escribe:\n\n"Oye no entendí bien lo que me explicaron. O sea yo pago renta todos los meses, pero una parte de eso va a la compra de la casa? Cómo así? No me quedó claro, perdona."',
-    },
-  ];
+  const EXERCISES = ['e1','e2','e3','e4','e5'];
 
   // ========== State ==========
   const state = {
@@ -282,141 +205,96 @@
       const cur = state.get();
       const next = { ...cur, ...patch };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      return next;
     },
+    clear: () => localStorage.removeItem(STORAGE_KEY),
   };
-  function setStep(step) { state.set({ current_step: step }); }
-  function getStep() { return state.get().current_step || STEPS.WELCOME; }
 
-  const uuidV4 = () => {
-    if (crypto && crypto.randomUUID) return crypto.randomUUID();
+  function uuidV4() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
-      const r = Math.random() * 16 | 0;
-      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+      const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+      return v.toString(16);
     });
-  };
-
-  // ========== Metrics ==========
-  const metrics = { paste_events: 0, tab_switches: 0, active_time_seconds: 0 };
-  let activeIntervalId = null;
-  let tabVisible = true;
-  let pasteListenerAttached = false;
-  let aiListenersAttached = false;
-  let situationsRendered = false;
-  let questionsRendered = false;
-
-  function tickActive() {
-    if (metrics.active_time_seconds >= MAX_ACTIVE_SEC) return;
-    if (tabVisible && document.hasFocus()) metrics.active_time_seconds += 1;
   }
-  document.addEventListener('visibilitychange', () => {
-    if (document.hidden) { tabVisible = false; metrics.tab_switches += 1; }
-    else { tabVisible = true; }
-    persistMetrics();
-  });
-  window.addEventListener('blur', () => { tabVisible = false; });
-  window.addEventListener('focus', () => { tabVisible = true; });
+
+  // ========== Metrics (silent) ==========
+  const metrics = {
+    paste_events: 0,
+    tab_switches: 0,
+    active_time_seconds: 0,
+  };
+  let activeIntervalId = null;
+  let tabVisible = !document.hidden;
+
   function startMetricsTimer() {
     if (activeIntervalId) return;
-    activeIntervalId = setInterval(() => { tickActive(); persistMetrics(); }, 1000);
-  }
-  function persistMetrics() { state.set({ metrics: { ...metrics } }); }
-  function restoreMetrics() {
-    const s = state.get();
-    if (s.metrics) {
-      metrics.paste_events = s.metrics.paste_events || 0;
-      metrics.tab_switches = s.metrics.tab_switches || 0;
-      metrics.active_time_seconds = s.metrics.active_time_seconds || 0;
-    }
-  }
-  function attachGlobalPasteTracker() {
-    if (pasteListenerAttached) return;
-    pasteListenerAttached = true;
-    document.addEventListener('paste', (e) => {
-      const t = e.target;
-      if (t && (t.tagName === 'TEXTAREA' || t.tagName === 'INPUT')) {
-        metrics.paste_events += 1;
-        persistMetrics();
+    activeIntervalId = setInterval(() => {
+      if (tabVisible && metrics.active_time_seconds < MAX_ACTIVE_SEC) {
+        metrics.active_time_seconds += 1;
+        if (metrics.active_time_seconds % 15 === 0) persistMetrics();
       }
-    });
+    }, 1000);
+  }
+  function persistMetrics() {
+    state.set({ metrics: { ...metrics } });
+  }
+  function restoreMetrics() {
+    const m = state.get().metrics || {};
+    metrics.paste_events = m.paste_events || 0;
+    metrics.tab_switches = m.tab_switches || 0;
+    metrics.active_time_seconds = m.active_time_seconds || 0;
   }
 
-  // ========== DOM refs ==========
+  document.addEventListener('visibilitychange', () => {
+    tabVisible = !document.hidden;
+    if (document.hidden) {
+      metrics.tab_switches += 1;
+      persistMetrics();
+    }
+  });
+  document.addEventListener('paste', (e) => {
+    const tag = (e.target && e.target.tagName) || '';
+    if (tag === 'TEXTAREA' || tag === 'INPUT') {
+      metrics.paste_events += 1;
+      persistMetrics();
+    }
+  });
+
+  // ========== DOM ==========
   const $ = (id) => document.getElementById(id);
   const welcomeSec = $('welcome-section');
-  const part1Sec = $('part1-section');
-  const part2Sec = $('part2-section');
-  const part3Sec = $('part3-section');
+  const exercisesSec = $('exercises-section');
   const successSec = $('success-section');
   const errorSec = $('error-section');
   const emailInput = $('email');
   const emailErr = $('email-error');
   const statementCb = $('statement-cb');
   const startBtn = $('start-btn');
-  const continueP2Btn = $('continue-p2-btn');
-  const continueP3Btn = $('continue-p3-btn');
   const submitBtn = $('submit-btn');
   const submitStatus = $('submit-status');
-  const questionsEl = $('questions');
-  const situationsEl = $('situations');
-  const clockEl = $('clock');
-  const timerBar = $('timer-bar');
-  const timerLabel = $('timer-label');
-  const part2Toast = $('part2-toast');
   const errorPayload = $('error-payload');
   const copyBtn = $('copy-btn');
   const mailtoLink = $('mailto-link');
   const retryBtn = $('retry-btn');
 
-  const abandonedSec = $('abandoned-section');
-  const ALL_SECTIONS = [welcomeSec, part1Sec, part2Sec, part3Sec, successSec, errorSec, abandonedSec];
+  const ALL_SECTIONS = [welcomeSec, exercisesSec, successSec, errorSec];
   function hideAll() { ALL_SECTIONS.forEach(s => s.classList.add('hidden')); }
   function show(el) { el.classList.remove('hidden'); }
 
-  // ========== Initial / Resume ==========
+  // ========== Bootstrap ==========
   restoreMetrics();
   (function bootstrap() {
     const s0 = state.get();
     if (s0.submitted) { hideAll(); show(successSec); return; }
-    if (s0.abandoned) { hideAll(); show(abandonedSec); return; }
     emailInput.value = s0.email || '';
     statementCb.checked = !!s0.statement_accepted;
     if (s0.startTime && s0.email && s0.submission_id && s0.statement_accepted) {
-      // Si llevan más de RESUME_TOLERANCE_MS sin actividad → game over
-      const lastSeen = s0.last_seen_at ? new Date(s0.last_seen_at).getTime() : 0;
-      const gap = Date.now() - lastSeen;
-      if (gap > RESUME_TOLERANCE_MS) {
-        state.set({ abandoned: true, abandoned_at: new Date().toISOString(), abandoned_gap_ms: gap });
-        hideAll(); show(abandonedSec);
-        return;
-      }
-      resumeSession();
+      enterExercises();
     } else {
       hideAll(); show(welcomeSec);
     }
   })();
 
-  // ========== Liveness heartbeat (estricto: cerrar tab > 60s = game over) ==========
-  function bumpLastSeen() {
-    const s = state.get();
-    if (!s.startTime || s.submitted || s.abandoned) return;
-    state.set({ last_seen_at: new Date().toISOString() });
-  }
-  setInterval(bumpLastSeen, 5000);
-  document.addEventListener('visibilitychange', () => { if (!document.hidden) bumpLastSeen(); });
-  window.addEventListener('focus', bumpLastSeen);
-
-  function resumeSession() {
-    const s = state.get();
-    const expired = s.startTime && Date.now() >= new Date(s.startTime).getTime() + DURATION_MS;
-    const step = s.current_step || STEPS.P1;
-    if (step === STEPS.P3) { enterPart3(); return; }
-    if (step === STEPS.P2) { enterPart2(); return; }
-    if (expired) { enterPart2({ reason: 'timeout_on_resume' }); return; }
-    enterPart1();
-  }
-
-  // ========== Welcome / Start ==========
+  // ========== Start ==========
   startBtn.addEventListener('click', () => {
     if (startBtn.disabled) return;
     emailErr.textContent = '';
@@ -424,332 +302,128 @@
     if (!EMAIL_RE.test(email)) { emailErr.textContent = 'Por favor ingresa un email válido.'; return; }
     if (!statementCb.checked) { emailErr.textContent = 'Debes aceptar el compromiso para continuar.'; return; }
     const existing = state.get();
-    if (existing.abandoned) {
-      hideAll(); show(abandonedSec);
+    if (existing.submission_id && existing.startTime && existing.email && !existing.submitted) {
+      // Continuar sesión existente con misma identidad
+      enterExercises();
       return;
     }
-    if (existing.submission_id && existing.startTime && existing.email && !existing.submitted) {
-      // Si ya hay sesión iniciada con misma identidad, continuar (sin segundo confirm)
-      resumeSession(); return;
-    }
     metrics.paste_events = 0; metrics.tab_switches = 0; metrics.active_time_seconds = 0;
-    const nowIso = new Date().toISOString();
     state.set({
       email,
       submission_id: uuidV4(),
-      startTime: nowIso,
-      last_seen_at: nowIso,
+      startTime: new Date().toISOString(),
       statement_accepted: true,
       answers: {},
-      p2: {},
-      ai: {},
-      current_step: STEPS.P1,
       metrics: { paste_events: 0, tab_switches: 0, active_time_seconds: 0 },
       submitted: false,
-      abandoned: false,
     });
-    enterPart1();
+    enterExercises();
   });
 
-  // ========== Enter Part 1 (preguntas con timer) ==========
-  function enterPart1() {
+  // ========== Enter exercises ==========
+  let answersWired = false;
+  function enterExercises() {
     startBtn.disabled = true;
-    setStep(STEPS.P1);
-    hideAll(); show(part1Sec);
-    if (!questionsRendered) { renderQuestions(state.get().answers || {}); questionsRendered = true; }
-    else { refillQuestions(state.get().answers || {}); }
+    hideAll(); show(exercisesSec);
     startMetricsTimer();
-    attachGlobalPasteTracker();
-    const s = state.get();
-    const start = s.startTime ? new Date(s.startTime).getTime() : Date.now();
-    if (Date.now() >= start + DURATION_MS) {
-      lockPart1();
-      enterPart2({ reason: 'timeout_on_resume' });
-      return;
-    }
-    startTimer();
-  }
-
-  function renderQuestions(answers) {
-    questionsEl.innerHTML = '';
-    for (const q of QUESTIONS) {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <div class="q-title">${escapeHtml(q.title)}</div>
-        <div class="q-hint">${escapeHtml(q.text)}</div>
-        <textarea id="${q.id}" data-qid="${q.id}" rows="5"></textarea>
-        <div class="q-meta">
-          <span><span id="${q.id}-count">0</span> caracteres</span>
-          <span id="${q.id}-saved"></span>
-        </div>
-      `;
-      questionsEl.appendChild(card);
-      const ta = card.querySelector('textarea');
-      ta.value = answers[q.id] || '';
-      updateCount(q.id);
-      ta.addEventListener('input', () => updateCount(q.id));
-      ta.addEventListener('blur', () => saveAnswer(q.id, ta.value));
-    }
-  }
-  function refillQuestions(answers) {
-    for (const q of QUESTIONS) {
-      const ta = document.getElementById(q.id);
-      if (ta) { ta.value = answers[q.id] || ''; updateCount(q.id); }
-    }
-  }
-  function lockPart1() {
-    for (const q of QUESTIONS) {
-      const ta = document.getElementById(q.id);
-      if (ta) ta.setAttribute('readonly', 'readonly');
+    const ans = state.get().answers || {};
+    EXERCISES.forEach(id => { $(id).value = ans[id] || ''; });
+    if (!answersWired) {
+      answersWired = true;
+      EXERCISES.forEach(id => {
+        $(id).addEventListener('input', flushAnswers);
+        $(id).addEventListener('blur', flushAnswers);
+      });
     }
   }
 
-  // ========== Enter Part 2 (meta-AI sobre Parte 1) ==========
-  function enterPart2(opts) {
-    opts = opts || {};
-    if (questionsRendered) {
-      for (const q of QUESTIONS) {
-        const ta = document.getElementById(q.id);
-        if (ta) saveAnswer(q.id, ta.value);
-      }
-    }
-    if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-    setStep(STEPS.P2);
-    hideAll(); show(part2Sec);
-    attachAiListeners();
-    const ai = state.get().ai || {};
-    $('ai-msg-critique').value = ai.ai_msg_critique || '';
-    $('ai-trust').value = ai.ai_trust || '';
-    $('ai-error').value = ai.ai_error || '';
-    part2Toast.innerHTML = '';
-    if (opts.reason === 'timeout') {
-      part2Toast.innerHTML = '<div class="toast">Se agotó el tiempo. Continuando con la siguiente parte.</div>';
-    } else if (opts.reason === 'timeout_on_resume') {
-      part2Toast.innerHTML = '<div class="toast">El tiempo de la primera parte ya había terminado. Continúas aquí.</div>';
-    }
-    // Auto-save partial submission al entrar a Parte 2 (intentamos capturar progreso)
-    sendPartialSubmission('reached_p2');
-  }
-
-  function attachAiListeners() {
-    if (aiListenersAttached) return;
-    aiListenersAttached = true;
-    ['ai-msg-critique','ai-trust','ai-error'].forEach(id => {
-      $(id).addEventListener('change', saveAiFields);
-      $(id).addEventListener('blur', saveAiFields);
-    });
-  }
-  function saveAiFields() {
-    state.set({ ai: {
-      ai_msg_critique: $('ai-msg-critique').value,
-      ai_trust: $('ai-trust').value,
-      ai_error: $('ai-error').value,
-    }});
-  }
-
-  continueP2Btn.addEventListener('click', () => {
-    if (continueP2Btn.disabled) return;
-    continueP2Btn.disabled = true;
-    enterPart2();
-    setTimeout(() => { continueP2Btn.disabled = false; }, 500);
-  });
-
-  // ========== Enter Part 3 (situaciones cliente) ==========
-  function enterPart3() {
-    saveAiFields();
-    setStep(STEPS.P3);
-    hideAll(); show(part3Sec);
-    if (!situationsRendered) { renderSituations(state.get().p2 || {}); situationsRendered = true; }
-    else { refillSituations(state.get().p2 || {}); }
-    // Auto-save partial al entrar a Parte 3 (capturamos progreso por si abandonan acá)
-    sendPartialSubmission('reached_p3');
-  }
-
-  function renderSituations(p2) {
-    situationsEl.innerHTML = '';
-    for (const sit of SITUATIONS) {
-      const card = document.createElement('div');
-      card.className = 'card';
-      card.innerHTML = `
-        <h3>${escapeHtml(sit.title)}</h3>
-        <div class="card-sit">${escapeHtml(sit.context).replace(/\n/g, '<br>')}</div>
-        <label>Mensaje que le mandarías</label>
-        <textarea id="${sit.msgField}" data-qid="${sit.msgField}" rows="4"></textarea>
-        <div class="q-meta"><span><span id="${sit.msgField}-count">0</span> caracteres</span><span id="${sit.msgField}-saved"></span></div>
-
-        <label style="margin-top: 14px;">¿Usaste AI? Si sí, cuéntanos: qué le pediste, qué cambiaste, por qué.</label>
-        <div class="sublabel">Si no usaste AI, escríbelo acá.</div>
-        <textarea id="${sit.metaField}" data-qid="${sit.metaField}" rows="3"></textarea>
-        <div class="q-meta"><span><span id="${sit.metaField}-count">0</span> caracteres</span><span id="${sit.metaField}-saved"></span></div>
-      `;
-      situationsEl.appendChild(card);
-      const taMsg = card.querySelector('#' + sit.msgField);
-      const taMeta = card.querySelector('#' + sit.metaField);
-      taMsg.value = p2[sit.msgField] || '';
-      taMeta.value = p2[sit.metaField] || '';
-      updateCount(sit.msgField); updateCount(sit.metaField);
-      taMsg.addEventListener('input', () => updateCount(sit.msgField));
-      taMeta.addEventListener('input', () => updateCount(sit.metaField));
-      taMsg.addEventListener('blur', () => saveP2(sit.msgField, taMsg.value));
-      taMeta.addEventListener('blur', () => saveP2(sit.metaField, taMeta.value));
-    }
-  }
-  function refillSituations(p2) {
-    for (const sit of SITUATIONS) {
-      const taMsg = document.getElementById(sit.msgField);
-      const taMeta = document.getElementById(sit.metaField);
-      if (taMsg) { taMsg.value = p2[sit.msgField] || ''; updateCount(sit.msgField); }
-      if (taMeta) { taMeta.value = p2[sit.metaField] || ''; updateCount(sit.metaField); }
-    }
-  }
-
-  continueP3Btn.addEventListener('click', () => {
-    if (continueP3Btn.disabled) return;
-    continueP3Btn.disabled = true;
-    enterPart3();
-    setTimeout(() => { continueP3Btn.disabled = false; }, 500);
-  });
-
-  // ========== Shared save / count helpers ==========
-  function updateCount(id) {
-    const ta = document.getElementById(id);
-    const c = document.getElementById(id + '-count');
-    if (ta && c) c.textContent = ta.value.length;
-  }
-  function saveAnswer(qid, val) {
-    const cur = state.get();
-    const answers = cur.answers || {};
-    answers[qid] = val;
-    state.set({ answers });
-    flashSaved(qid);
-  }
-  function saveP2(fid, val) {
-    const cur = state.get();
-    const p2 = cur.p2 || {};
-    p2[fid] = val;
-    state.set({ p2 });
-    flashSaved(fid);
-  }
-  function flashSaved(id) {
-    const tag = document.getElementById(id + '-saved');
-    if (tag) { tag.textContent = 'Guardado'; tag.className = 'saved'; setTimeout(() => { tag.textContent = ''; }, 1500); }
-  }
-
-  // ========== Timer ==========
-  let timerInterval = null;
-  let part1Expired = false;
-  function startTimer() {
-    if (timerInterval) clearInterval(timerInterval);
-    tickTimer();
-    timerInterval = setInterval(tickTimer, 1000);
-  }
-  function tickTimer() {
-    const cur = state.get();
-    if (!cur.startTime) return;
-    const start = new Date(cur.startTime).getTime();
-    const end = start + DURATION_MS;
-    const now = Date.now();
-    const remaining = Math.max(0, end - now);
-    if (remaining <= 0 && !part1Expired) {
-      part1Expired = true;
-      clearInterval(timerInterval); timerInterval = null;
-      lockPart1();
-      enterPart2({ reason: 'timeout' });
-      return;
-    }
-    const mm = Math.floor(remaining / 60000);
-    const ss = Math.floor((remaining % 60000) / 1000);
-    clockEl.textContent = `${String(mm).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
-    timerBar.classList.remove('warn', 'danger');
-    if (remaining <= 5 * 60 * 1000 && remaining > 60 * 1000) timerBar.classList.add('warn');
-    else if (remaining <= 60 * 1000) timerBar.classList.add('danger');
-  }
-
-  // ========== Submit ==========
-  function flushToState() {
-    const cur = state.get();
-    const answers = cur.answers || {};
-    if (questionsRendered) {
-      for (const q of QUESTIONS) {
-        const ta = document.getElementById(q.id);
-        if (ta) answers[q.id] = ta.value;
-      }
-    }
-    const p2 = cur.p2 || {};
-    if (situationsRendered) {
-      for (const sit of SITUATIONS) {
-        const taMsg = document.getElementById(sit.msgField);
-        const taMeta = document.getElementById(sit.metaField);
-        if (taMsg) p2[sit.msgField] = taMsg.value;
-        if (taMeta) p2[sit.metaField] = taMeta.value;
-      }
-    }
-    state.set({ answers, p2 });
-    saveAiFields();
+  function flushAnswers() {
+    const ans = {};
+    EXERCISES.forEach(id => { ans[id] = $(id).value; });
+    state.set({ answers: ans });
     persistMetrics();
   }
 
+  // ========== Build payload ==========
   function buildPayload() {
     const cur = state.get();
-    const answers = cur.answers || {};
-    const p2 = cur.p2 || {};
-    const ai = cur.ai || {};
+    const ans = cur.answers || {};
     const payload = {
       email: cur.email,
       submission_id: cur.submission_id,
       start_time: cur.startTime,
       end_time: new Date().toISOString(),
       user_agent: navigator.userAgent,
-      p2_msg1: p2.p2_msg1 || '',
-      p2_meta1: p2.p2_meta1 || '',
-      p2_msg2: p2.p2_msg2 || '',
-      p2_meta2: p2.p2_meta2 || '',
-      // ai_used / ai_where / ai_mine_vs_ai mantienen los headers existentes del Sheet,
-      // pero ahora reciben las 3 preguntas nuevas de pensamiento crítico (P2 redesign 2026-04-26).
-      ai_used: ai.ai_msg_critique || '',
-      ai_where: ai.ai_trust || '',
-      ai_mine_vs_ai: ai.ai_error || '',
+      // Map e1-e5 a q1-q5 del Sheet existente; q6-q10 quedan vacías
+      q1: ans.e1 || '',
+      q2: ans.e2 || '',
+      q3: ans.e3 || '',
+      q4: ans.e4 || '',
+      q5: ans.e5 || '',
+      q6: '', q7: '', q8: '', q9: '', q10: '',
+      p2_msg1: '', p2_meta1: '', p2_msg2: '', p2_meta2: '',
+      ai_used: '', ai_where: '', ai_mine_vs_ai: '',
       paste_events: metrics.paste_events,
       tab_switches: metrics.tab_switches,
       active_time_seconds: metrics.active_time_seconds,
       statement_accepted: cur.statement_accepted === true,
       _status: 'final',
     };
-    for (const q of QUESTIONS) payload[q.id] = answers[q.id] || '';
     return payload;
   }
 
-  // ========== Partial submission (auto-save al avanzar de fase) ==========
+  // ========== Partial submission ==========
+  let partialSentOnce = false;
   function sendPartialSubmission(reason) {
     try {
+      const cur = state.get();
+      if (!cur.startTime || cur.submitted) return;
+      const ans = cur.answers || {};
+      const hasAny = EXERCISES.some(id => (ans[id] || '').trim().length > 0);
+      if (!hasAny && reason !== 'pagehide') return; // no mandar partials vacíos salvo cierre de tab
       const payload = buildPayload();
       payload._status = 'partial';
       payload._reason = reason;
       const body = JSON.stringify(payload);
-      // sendBeacon es resistente a cierres de tab
       if (navigator.sendBeacon) {
         const blob = new Blob([body], { type: 'text/plain' });
         navigator.sendBeacon(WEBHOOK_URL, blob);
       } else {
         fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body, keepalive:true }).catch(()=>{});
       }
-    } catch (_) {}
+    } catch(_) {}
   }
-  // Best-effort: si el browser cierra durante la prueba, manda lo que tenga
+
+  // Auto-save partial cuando han pasado al menos 5 minutos y hay 1+ ejercicio respondido
+  setInterval(() => {
+    const cur = state.get();
+    if (!cur.startTime || cur.submitted) return;
+    const ageSec = (Date.now() - new Date(cur.startTime).getTime()) / 1000;
+    if (ageSec < 300) return; // esperar 5 min antes del primer partial
+    if (partialSentOnce) return; // solo 1 partial silencioso por sesión (evitar ruido)
+    const ans = cur.answers || {};
+    const filled = EXERCISES.filter(id => (ans[id] || '').trim().length > 30).length;
+    if (filled >= 2) {
+      sendPartialSubmission('autosave_2_done');
+      partialSentOnce = true;
+    }
+  }, 60000);
+
+  // sendBeacon en cierre de tab (mejor effort)
   window.addEventListener('pagehide', () => {
-    const s = state.get();
-    if (s.startTime && !s.submitted && !s.abandoned) {
-      flushToState();
+    const cur = state.get();
+    if (cur.startTime && !cur.submitted) {
+      flushAnswers();
       sendPartialSubmission('pagehide');
     }
   });
 
+  // ========== Submit ==========
   submitBtn.addEventListener('click', () => {
     if (submitBtn.disabled) return;
     submitBtn.disabled = true;
     submitStatus.textContent = 'Enviando...';
-    flushToState();
+    flushAnswers();
     sendSubmission();
   });
 
@@ -768,7 +442,6 @@
       }
       state.set({ submitted: true, end_time: payload.end_time });
       hideAll(); show(successSec);
-      if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
       if (activeIntervalId) { clearInterval(activeIntervalId); activeIntervalId = null; }
     } catch (err) {
       submitBtn.disabled = false;
@@ -799,10 +472,10 @@
   retryBtn.addEventListener('click', () => {
     if (retryBtn.disabled) return;
     retryBtn.disabled = true;
-    hideAll(); show(part3Sec);
+    hideAll(); show(exercisesSec);
     submitBtn.disabled = true;
     submitStatus.textContent = 'Reintentando...';
-    flushToState();
+    flushAnswers();
     sendSubmission();
     setTimeout(() => { retryBtn.disabled = false; }, 1000);
   });
@@ -814,20 +487,10 @@
       const v = JSON.parse(e.newValue || '{}');
       if (v.submitted) {
         hideAll(); show(successSec);
-        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
-        if (activeIntervalId) { clearInterval(activeIntervalId); activeIntervalId = null; }
-      } else if (v.abandoned) {
-        hideAll(); show(abandonedSec);
-        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
         if (activeIntervalId) { clearInterval(activeIntervalId); activeIntervalId = null; }
       }
     } catch {}
   });
-
-  // ========== Utils ==========
-  function escapeHtml(s) {
-    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  }
 })();
 </script>
 </body>
