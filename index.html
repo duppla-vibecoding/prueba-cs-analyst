@@ -95,7 +95,7 @@
 
     <h2>Cómo funciona</h2>
     <ul class="intro-list">
-      <li><strong>10 preguntas abiertas</strong> con un cronómetro de <strong>30 minutos</strong>.</li>
+      <li><strong>10 preguntas abiertas</strong> con un cronómetro de <strong>45 minutos</strong>.</li>
       <li>Después continúas con unas preguntas cortas adicionales (sin tiempo).</li>
       <li>Respuestas genéricas, sin detalle concreto, descalifican.</li>
       <li><strong>No podrás volver a una sección anterior.</strong></li>
@@ -131,7 +131,7 @@
   <section id="part1-section" class="hidden">
     <div class="timer-bar" id="timer-bar">
       <span id="timer-label">Tiempo restante</span>
-      <span class="clock" id="clock">30:00</span>
+      <span class="clock" id="clock">45:00</span>
     </div>
     <span class="section-tag">PARTE 1</span>
     <h2 style="margin-top: 8px;">10 preguntas abiertas</h2>
@@ -142,32 +142,38 @@
     </div>
   </section>
 
-  <!-- SECTION: part 2 (meta-preguntas AI) -->
+  <!-- SECTION: part 2 (pensamiento crítico vs AI) -->
   <section id="part2-section" class="hidden">
     <div id="part2-toast"></div>
     <span class="section-tag">PARTE 2</span>
-    <h2 style="margin-top: 8px;">Sobre cómo respondiste</h2>
-    <p>Responde con honestidad. Premiamos el uso criterioso de herramientas, no castigamos el uso declarado.</p>
+    <h2 style="margin-top: 8px;">Pensamiento crítico</h2>
+    <p>Sin cronómetro. Tómate el tiempo que necesites. Puedes usar AI si quieres — pero estas preguntas miden tu juicio sobre lo que la AI te entrega, no la respuesta de la AI en sí.</p>
 
     <div class="card">
-      <label for="ai-used">¿Usaste AI (ChatGPT, Gemini, Claude, etc.) para responder las 10 preguntas anteriores?</label>
-      <select id="ai-used">
-        <option value="">Selecciona…</option>
-        <option value="No">No</option>
-        <option value="Parcialmente">Parcialmente</option>
-        <option value="Sí">Sí</option>
-      </select>
+      <h3 style="margin-top:0;">2.1 — La IA te recomienda algo, ¿lo seguirías?</h3>
+      <p>Un cliente está estancado en su proceso de compra. Le pides a ChatGPT que redacte un mensaje empático. Esto te entrega:</p>
+      <blockquote style="border-left: 3px solid var(--text-dim); padding: 8px 12px; color: var(--text-dim); margin: 8px 0; font-style: italic;">
+        "Hola estimado cliente, lamentamos profundamente los inconvenientes ocasionados durante este proceso. Su satisfacción es nuestra máxima prioridad y trabajaremos sin descanso para resolver su situación a la brevedad posible. No dude en contactarnos ante cualquier consulta. Quedamos a su disposición."
+      </blockquote>
+      <label for="ai-msg-critique">¿Mandarías este mensaje tal cual? Si no, ¿qué cambiarías y por qué? Sé concreto.</label>
+      <textarea id="ai-msg-critique" rows="5"></textarea>
     </div>
 
     <div class="card">
-      <label for="ai-where">Si usaste AI, ¿en cuáles preguntas exactamente y cómo la usaste?</label>
-      <div class="sublabel">Ej: "En Q5 le pedí a Gemini que estructurara la idea, luego reescribí el tono porque sonaba muy formal."</div>
-      <textarea id="ai-where" rows="4"></textarea>
+      <h3 style="margin-top:0;">2.2 — Cuándo NO confiar en la IA</h3>
+      <p>Un cliente te pregunta: "¿Cuánto debería pagar de cuota inicial para un apartamento de 280 millones en Bogotá con Duppla?". Le preguntas a ChatGPT y te da una respuesta detallada con porcentajes, plazos y recomendaciones financieras.</p>
+      <label for="ai-trust">¿Le mandarías esa respuesta al cliente directamente? ¿Por qué sí o por qué no? ¿Qué harías en cambio?</label>
+      <textarea id="ai-trust" rows="5"></textarea>
     </div>
 
     <div class="card">
-      <label for="ai-mine-vs-ai">¿Qué parte de tus respuestas es originalmente tuya y qué parte es AI?</label>
-      <textarea id="ai-mine-vs-ai" rows="3"></textarea>
+      <h3 style="margin-top:0;">2.3 — Detectar el error</h3>
+      <p>Le pediste a la IA que resuma la situación de un cliente. Te entregó esto:</p>
+      <blockquote style="border-left: 3px solid var(--text-dim); padding: 8px 12px; color: var(--text-dim); margin: 8px 0; font-style: italic;">
+        "El cliente Juan Pérez está esperando la entrega de su inmueble desde el 15 de marzo. Ha tenido 3 contactos previos con el equipo de operaciones y la última actualización fue hace 2 semanas. Su satisfacción se mantiene alta según los indicadores."
+      </blockquote>
+      <label for="ai-error">¿Qué le pedirías a la IA antes de pasar este resumen a tu jefe? ¿Qué falta o qué te genera dudas?</label>
+      <textarea id="ai-error" rows="5"></textarea>
     </div>
 
     <div class="row" style="margin-top: 24px;">
@@ -228,7 +234,7 @@
   const WEBHOOK_URL = 'https://n8n.duppla.co/webhook/prueba-cs-analyst-submit';
   // const HEARTBEAT_URL = 'https://n8n.duppla.co/webhook/prueba-cs-heartbeat'; // TODO
   const FALLBACK_EMAIL = 'fosorno@duppla.co';
-  const DURATION_MS = 30 * 60 * 1000;
+  const DURATION_MS = 45 * 60 * 1000;
   const RESUME_TOLERANCE_MS = 60 * 1000; // 60s sin actividad → game over
   const STORAGE_KEY = 'prueba-cs-analyst-v2';
   const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -513,30 +519,32 @@
     hideAll(); show(part2Sec);
     attachAiListeners();
     const ai = state.get().ai || {};
-    $('ai-used').value = ai.ai_used || '';
-    $('ai-where').value = ai.ai_where || '';
-    $('ai-mine-vs-ai').value = ai.ai_mine_vs_ai || '';
+    $('ai-msg-critique').value = ai.ai_msg_critique || '';
+    $('ai-trust').value = ai.ai_trust || '';
+    $('ai-error').value = ai.ai_error || '';
     part2Toast.innerHTML = '';
     if (opts.reason === 'timeout') {
       part2Toast.innerHTML = '<div class="toast">Se agotó el tiempo. Continuando con la siguiente parte.</div>';
     } else if (opts.reason === 'timeout_on_resume') {
       part2Toast.innerHTML = '<div class="toast">El tiempo de la primera parte ya había terminado. Continúas aquí.</div>';
     }
+    // Auto-save partial submission al entrar a Parte 2 (intentamos capturar progreso)
+    sendPartialSubmission('reached_p2');
   }
 
   function attachAiListeners() {
     if (aiListenersAttached) return;
     aiListenersAttached = true;
-    ['ai-used','ai-where','ai-mine-vs-ai'].forEach(id => {
+    ['ai-msg-critique','ai-trust','ai-error'].forEach(id => {
       $(id).addEventListener('change', saveAiFields);
       $(id).addEventListener('blur', saveAiFields);
     });
   }
   function saveAiFields() {
     state.set({ ai: {
-      ai_used: $('ai-used').value,
-      ai_where: $('ai-where').value,
-      ai_mine_vs_ai: $('ai-mine-vs-ai').value,
+      ai_msg_critique: $('ai-msg-critique').value,
+      ai_trust: $('ai-trust').value,
+      ai_error: $('ai-error').value,
     }});
   }
 
@@ -554,6 +562,8 @@
     hideAll(); show(part3Sec);
     if (!situationsRendered) { renderSituations(state.get().p2 || {}); situationsRendered = true; }
     else { refillSituations(state.get().p2 || {}); }
+    // Auto-save partial al entrar a Parte 3 (capturamos progreso por si abandonan acá)
+    sendPartialSubmission('reached_p3');
   }
 
   function renderSituations(p2) {
@@ -695,17 +705,45 @@
       p2_meta1: p2.p2_meta1 || '',
       p2_msg2: p2.p2_msg2 || '',
       p2_meta2: p2.p2_meta2 || '',
-      ai_used: ai.ai_used || '',
-      ai_where: ai.ai_where || '',
-      ai_mine_vs_ai: ai.ai_mine_vs_ai || '',
+      // ai_used / ai_where / ai_mine_vs_ai mantienen los headers existentes del Sheet,
+      // pero ahora reciben las 3 preguntas nuevas de pensamiento crítico (P2 redesign 2026-04-26).
+      ai_used: ai.ai_msg_critique || '',
+      ai_where: ai.ai_trust || '',
+      ai_mine_vs_ai: ai.ai_error || '',
       paste_events: metrics.paste_events,
       tab_switches: metrics.tab_switches,
       active_time_seconds: metrics.active_time_seconds,
       statement_accepted: cur.statement_accepted === true,
+      _status: 'final',
     };
     for (const q of QUESTIONS) payload[q.id] = answers[q.id] || '';
     return payload;
   }
+
+  // ========== Partial submission (auto-save al avanzar de fase) ==========
+  function sendPartialSubmission(reason) {
+    try {
+      const payload = buildPayload();
+      payload._status = 'partial';
+      payload._reason = reason;
+      const body = JSON.stringify(payload);
+      // sendBeacon es resistente a cierres de tab
+      if (navigator.sendBeacon) {
+        const blob = new Blob([body], { type: 'text/plain' });
+        navigator.sendBeacon(WEBHOOK_URL, blob);
+      } else {
+        fetch(WEBHOOK_URL, { method:'POST', headers:{'Content-Type':'text/plain'}, body, keepalive:true }).catch(()=>{});
+      }
+    } catch (_) {}
+  }
+  // Best-effort: si el browser cierra durante la prueba, manda lo que tenga
+  window.addEventListener('pagehide', () => {
+    const s = state.get();
+    if (s.startTime && !s.submitted && !s.abandoned) {
+      flushToState();
+      sendPartialSubmission('pagehide');
+    }
+  });
 
   submitBtn.addEventListener('click', () => {
     if (submitBtn.disabled) return;
