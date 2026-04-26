@@ -2,296 +2,174 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rúbrica interna · Prueba CS Analyst</title>
+<title>Rúbrica · Prueba CS Analyst</title>
 <style>
-  :root {
-    --bg: #0f1115;
-    --surface: #171a21;
-    --surface-2: #1e222b;
-    --border: #2a2f3a;
-    --text: #e6e8ee;
-    --text-dim: #9099a8;
-    --accent: #4f8cff;
-    --good: #4cd5a0;
-    --bad: #ff6b6b;
-    --warn: #ffb454;
-  }
+  @page { size: Letter; margin: 14mm 14mm 12mm 14mm; }
   * { box-sizing: border-box; }
-  html, body { margin: 0; padding: 0; background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, system-ui, sans-serif; line-height: 1.5; }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 20px 80px; }
-  h1 { font-size: 26px; margin: 0 0 8px; }
-  h2 { font-size: 20px; margin: 28px 0 12px; }
-  h3 { font-size: 16px; margin: 20px 0 8px; }
-  p { margin: 0 0 10px; color: var(--text-dim); }
-  a { color: var(--accent); }
-  .warning-banner { background: #2a1d1d; border: 1px solid var(--bad); padding: 12px 16px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; }
-  .warning-banner strong { color: var(--bad); }
-  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 14px; }
-  .meta-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; font-size: 14px; }
-  .meta-table th, .meta-table td { padding: 10px 12px; border-bottom: 1px solid var(--border); text-align: left; vertical-align: top; }
-  .meta-table th { color: var(--text-dim); font-weight: 600; background: var(--surface); }
-  .rubric { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 8px; }
-  .rubric th { font-size: 12px; text-transform: uppercase; color: var(--text-dim); letter-spacing: 0.5px; padding: 8px 10px; border-bottom: 1px solid var(--border); text-align: left; }
-  .rubric td { padding: 10px; border-bottom: 1px solid var(--border); vertical-align: top; width: 33%; }
-  .rubric .hdr-good { color: var(--good); }
-  .rubric .hdr-bad { color: var(--bad); }
-  .rubric .hdr-warn { color: var(--warn); }
-  .q-num { display: inline-block; background: var(--accent); color: white; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 4px; margin-right: 6px; }
-  .section-tag { display: inline-block; background: var(--accent); color: white; font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 4px; letter-spacing: 0.5px; margin-right: 8px; }
-  .notes-area textarea { width: 100%; background: var(--surface-2); color: var(--text); border: 1px solid var(--border); border-radius: 6px; padding: 10px; font-family: inherit; font-size: 14px; min-height: 80px; resize: vertical; }
-  .notes-area label { display: block; font-size: 13px; color: var(--text-dim); margin-bottom: 4px; }
-  .links-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0 16px; }
-  .links-row a { text-decoration: none; background: var(--surface-2); border: 1px solid var(--border); padding: 8px 14px; border-radius: 6px; font-size: 14px; }
-  .links-row a:hover { background: var(--border); }
-  .flag-list { padding-left: 18px; margin: 4px 0 0; color: var(--text-dim); font-size: 13px; }
-  .flag-list li { margin-bottom: 3px; }
-  .bad { color: var(--bad); }
-  .good { color: var(--good); }
-  .warn { color: var(--warn); }
+  html, body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif; color: #1a1a1a; font-size: 10.5pt; line-height: 1.35; }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 16px 20px; }
+  h1 { font-size: 18pt; margin: 0 0 4px; font-weight: 700; }
+  .sub { color: #666; font-size: 10pt; margin: 0 0 14px; }
+  h2 { font-size: 12pt; margin: 14px 0 6px; padding-bottom: 4px; border-bottom: 2px solid #1a1a1a; }
+  h3 { font-size: 10.5pt; margin: 10px 0 4px; }
+  p { margin: 0 0 6px; }
+  table { width: 100%; border-collapse: collapse; font-size: 9.5pt; margin: 4px 0 8px; }
+  th, td { border: 1px solid #ccc; padding: 5px 7px; vertical-align: top; text-align: left; }
+  th { background: #f0f0f0; font-weight: 600; font-size: 9pt; text-transform: uppercase; letter-spacing: 0.3px; }
+  .ej { background: #eef4ff; }
+  .ej th { background: #cfe0ff; }
+  .num { display: inline-block; min-width: 22px; font-weight: 700; }
+  .red { color: #b80000; }
+  .grn { color: #047040; }
+  .gray { color: #666; }
+  .veredicto { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 6px 0; }
+  .v-card { border: 1px solid #ccc; padding: 6px 8px; border-radius: 4px; font-size: 9.5pt; }
+  .v-card .pts { font-weight: 700; font-size: 11pt; }
+  .v-descartar { background: #fde8e8; border-color: #f5b5b5; }
+  .v-entrevista { background: #fff5e0; border-color: #f0d290; }
+  .v-avanzar { background: #e6f7ec; border-color: #9adcb1; }
+  .v-prio { background: #def0ff; border-color: #99c8f0; }
+  .footer { color: #666; font-size: 8.5pt; margin-top: 14px; padding-top: 8px; border-top: 1px solid #ddd; }
+  .meta-row { background: #fafafa; border: 1px solid #e0e0e0; padding: 7px 10px; border-radius: 4px; margin-bottom: 8px; font-size: 9.5pt; }
+  ul { margin: 3px 0; padding-left: 18px; }
+  ul li { margin-bottom: 2px; }
+  .col-3 { width: 33%; }
+  @media print {
+    .wrap { padding: 0; }
+    h2 { page-break-after: avoid; }
+    table, .v-card { page-break-inside: avoid; }
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <h1>Rúbrica interna · Prueba CS Analyst</h1>
-  <p>Uso interno. No compartir con candidatos. Tómala como referencia mientras lees respuestas en el Sheet.</p>
+<h1>Rúbrica · Prueba CS Analyst</h1>
+<p class="sub">Cómo evaluar 5 ejercicios → score 0-15 → veredicto en 5 minutos por candidato</p>
 
-  <div class="warning-banner">
-    <strong>Señal anti-AI:</strong> respuestas pulidas, largas, sin nombres propios, sin números, sin "yo hice X" — probable AI sin edición.
-    <br><strong>Señal pro-candidato:</strong> detalles concretos (nombre del cliente, mes, herramienta, número, jefe), admite lo que no sabe, propone decisiones explícitas con su razón.
-  </div>
-
-  <div class="links-row">
-    <a href="https://docs.google.com/spreadsheets/d/1FRAnnw3tDNUupqOfQd0sQuhc-h3RFrFpeYLb7keZ-kY/edit" target="_blank">→ Abrir Sheet de respuestas</a>
-    <a href="https://duppla-vibecoding.github.io/prueba-cs-analyst/" target="_blank">→ Ver form como candidato</a>
-  </div>
-
-  <h2>Cómo usar esta rúbrica</h2>
-  <ol style="color: var(--text-dim); font-size: 14px; padding-left: 20px;">
-    <li>Lee respuesta cruda en el Sheet (fila del candidato).</li>
-    <li>Mira las columnas silenciosas: <code>paste_events</code>, <code>tab_switches</code>, <code>active_time_seconds</code>. Inconsistencia con respuesta "yo no usé AI" = red flag.</li>
-    <li>Para cada pregunta aplica la rúbrica de abajo: ¿buscar? ¿red flags? ¿qué NO penalizar?</li>
-    <li>Anota tu lectura en el campo de notas al final (se guarda solo en tu browser).</li>
-  </ol>
-
-  <h2>Mapa de competencias</h2>
-  <table class="meta-table">
-    <thead><tr><th>Competencia</th><th>Preguntas que la tocan</th></tr></thead>
-    <tbody>
-      <tr><td>Ownership</td><td>Q1, Q6, Q8</td></tr>
-      <tr><td>Empatía / manejo de emoción del cliente</td><td>Q1, Q3, Q5, Parte 3 A (María Clara)</td></tr>
-      <tr><td>Priorización bajo carga</td><td>Q2, Q7, Q9</td></tr>
-      <tr><td>Comunicación clara</td><td>Q3, Q5, Q8, Parte 3 A y B</td></tr>
-      <tr><td>Coordinación entre áreas</td><td>Q1, Q4</td></tr>
-      <tr><td>Tolerancia a la ambigüedad</td><td>Q7</td></tr>
-      <tr><td>Integridad</td><td>Q3, Q8, Parte 2 (meta-AI)</td></tr>
-      <tr><td>Didáctica / simpleza al explicar</td><td>Parte 3 B (Jorge)</td></tr>
-      <tr><td>Uso criterioso de AI</td><td>Parte 2 (meta global) + Parte 3 (metas por situación)</td></tr>
-    </tbody>
-  </table>
-
-  <h2>Dealbreakers (descalificadores)</h2>
-  <ul class="flag-list">
-    <li><span class="bad">Se bloquea sin claridad total</span> — Q7: pide más contexto antes de empezar, no actúa.</li>
-    <li><span class="bad">Frío / contractual</span> — Q3 o P2-A: solo cita reglas, sin humanidad.</li>
-    <li><span class="bad">Emocional sin resolver</span> — Q10: culpa a otros, sin autocrítica ni aprendizaje.</li>
-    <li><span class="bad">Sin organización</span> — Q2: responde "depende", caótico, sin método.</li>
-    <li><span class="bad">Miente sobre AI</span> — Parte 2 dice "no usé" pero pastes > 3 y respuestas suenan pulidas → descalificar por integridad.</li>
-  </ul>
-
-  <h2>Rúbrica por pregunta</h2>
-
-  <div class="card">
-    <h3><span class="section-tag">PARTE 1</span>Q1 · Cliente esperando otro equipo (5 min antes de reunión)</h3>
-    <table class="rubric">
-      <thead><tr>
-        <th class="hdr-good">Buscar</th><th class="hdr-bad">Red flags</th><th class="hdr-warn">No penalizar</th>
-      </tr></thead>
-      <tbody><tr>
-        <td>Contacto inmediato al cliente con acknowledge + deadline concreto ("te respondo en X horas"). Toma ownership, no se esconde detrás de "escalé".</td>
-        <td>Solo dice "escalo al otro equipo" sin compromiso propio. No habla con el cliente. Se justifica.</td>
-        <td>Si no da nombres de equipos internos de Duppla (no los conoce) — ok.</td>
-      </tr></tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3><span class="section-tag">PARTE 1</span>Q2 · Organización del día</h3>
-    <table class="rubric">
-      <thead><tr><th class="hdr-good">Buscar</th><th class="hdr-bad">Red flags</th><th class="hdr-warn">No penalizar</th></tr></thead>
-      <tbody><tr>
-        <td>Método concreto: priorización por urgencia/impacto, bloques de tiempo, momento de revisar bandeja, criterio de escalamiento.</td>
-        <td>"Depende". No da estructura. Promete "hacer todo". Solo cita metodología teórica sin aplicación.</td>
-        <td>Que la herramienta que mencione no sea la que usamos en Duppla.</td>
-      </tr></tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3><span class="section-tag">PARTE 1</span>Q3 · Promesa no escrita</h3>
-    <table class="rubric">
-      <thead><tr><th class="hdr-good">Buscar</th><th class="hdr-bad">Red flags</th><th class="hdr-warn">No penalizar</th></tr></thead>
-      <tbody><tr>
-        <td>Empatía primero ("entiendo tu molestia"), investiga si la promesa existe, busca una salida ganar-ganar sin mentirle. Diferencia emoción de contenido.</td>
-        <td>Responde con contrato ("no está, no se puede"). No pide tiempo para investigar. Escala sin resolver.</td>
-        <td>Usa jerga diferente a la de Duppla.</td>
-      </tr></tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3><span class="section-tag">PARTE 1</span>Q4 · Coordinación entre áreas</h3>
-    <table class="rubric">
-      <thead><tr><th class="hdr-good">Buscar</th><th class="hdr-bad">Red flags</th><th class="hdr-warn">No penalizar</th></tr></thead>
-      <tbody><tr>
-        <td>Toma ownership del ping-pong: convoca a las 3 áreas en 1 call, documenta en 1 solo hilo, pone deadline. No es mensajero entre ellas.</td>
-        <td>Sigue mensajero. No propone reunión. Espera que el cliente espere.</td>
-        <td>Estructura específica distinta a la que Duppla usa (Slack, email, Meet).</td>
-      </tr></tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3><span class="section-tag">PARTE 1</span>Q5 · Mensaje al cliente (cobro distinto)</h3>
-    <table class="rubric">
-      <thead><tr><th class="hdr-good">Buscar</th><th class="hdr-bad">Red flags</th><th class="hdr-warn">No penalizar</th></tr></thead>
-      <tbody><tr>
-        <td>Breve (≤5 líneas). Valida la duda. Explica con analogía o número simple. Cierra con disponibilidad ("si queda duda, agendemos 5 min").</td>
-        <td>Tratado de 3 párrafos. Tecnicismos. Arrogante ("como ya te explicamos"). Agenda call obligatoria para todo.</td>
-        <td>Redacción muy informal si logra claridad.</td>
-      </tr></tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3><span class="section-tag">PARTE 1</span>Q6 · Proceso automatizado</h3>
-    <table class="rubric">
-      <thead><tr><th class="hdr-good">Buscar</th><th class="hdr-bad">Red flags</th><th class="hdr-warn">No penalizar</th></tr></thead>
-      <tbody><tr>
-        <td>Caso concreto con nombre, herramienta, número de ahorro, qué se rompió. Admite lo que no funcionó.</td>
-        <td>Relato genérico sin números ni nombres. "Hice un Excel" sin más detalle. Inventa (señal de AI).</td>
-        <td>Automatización simple (macro, plantilla) cuenta si muestra criterio.</td>
-      </tr></tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3><span class="section-tag">PARTE 1</span>Q7 · Revisar sin contexto (cohorte de marzo)</h3>
-    <table class="rubric">
-      <thead><tr><th class="hdr-good">Buscar</th><th class="hdr-bad">Red flags</th><th class="hdr-warn">No penalizar</th></tr></thead>
-      <tbody><tr>
-        <td>Arranca sin esperar más instrucciones. Define qué significa "cómo van" (métricas mínimas). Identifica 2-3 casos que cuenten la historia. Prepara 3 bullets + 1 pregunta al jefe.</td>
-        <td>Pide más contexto antes de actuar. Se paraliza. Intenta cubrir todo en 3h sin priorizar.</td>
-        <td>Métricas específicas distintas a las de Duppla.</td>
-      </tr></tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3><span class="section-tag">PARTE 1</span>Q8 · Info equivocada</h3>
-    <table class="rubric">
-      <thead><tr><th class="hdr-good">Buscar</th><th class="hdr-bad">Red flags</th><th class="hdr-warn">No penalizar</th></tr></thead>
-      <tbody><tr>
-        <td>Avisa al cliente el mismo día, sin excusas. Mitiga el daño. Informa a su líder. Propone cómo evitar que pase de nuevo.</td>
-        <td>Oculta el error. Espera a ver si se enteran. Culpa a la info que le dieron.</td>
-        <td>Que no tenga un proceso super formal para "actualizar info".</td>
-      </tr></tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3><span class="section-tag">PARTE 1</span>Q9 · Decisión de 1 hora</h3>
-    <table class="rubric">
-      <thead><tr><th class="hdr-good">Buscar</th><th class="hdr-bad">Red flags</th><th class="hdr-warn">No penalizar</th></tr></thead>
-      <tbody><tr>
-        <td>Elige una, razona la decisión. Si elige B, explica por qué retener un cliente importante vale más. Si elige A, explica por qué el volumen acumulado vale.</td>
-        <td>"Haría las dos" / "Depende". No se compromete.</td>
-        <td>Cualquiera de las dos es válida si está bien razonada.</td>
-      </tr></tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3><span class="section-tag">PARTE 1</span>Q10 · Situación frustrante</h3>
-    <table class="rubric">
-      <thead><tr><th class="hdr-good">Buscar</th><th class="hdr-bad">Red flags</th><th class="hdr-warn">No penalizar</th></tr></thead>
-      <tbody><tr>
-        <td>Caso específico con nombres/números. Lo que HIZO ella (no "el equipo"). Autocrítica honesta. Aprendizaje concreto.</td>
-        <td>Culpa a otros. Sin autocrítica. Relato vago sin ninguna especificidad. "Todo salió bien al final" sin fricción.</td>
-        <td>Que sea frustración pequeña si está bien contada.</td>
-      </tr></tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3><span class="section-tag">PARTE 2</span>Meta-preguntas sobre uso de AI (después del timer)</h3>
-    <p style="color: var(--text-dim);">El candidato NO sabe desde el welcome que esta parte existe. Le cae por sorpresa después de la Parte 1. El punto NO es si usó AI — es si fue honesto/a y si la usó con criterio.</p>
-    <table class="rubric">
-      <thead><tr><th class="hdr-good">Premiar</th><th class="hdr-bad">Descartar</th><th class="hdr-warn">Neutro</th></tr></thead>
-      <tbody><tr>
-        <td>Declaró uso + explica qué cambió + por qué ("edité el tono", "los nombres no aplicaban"). Ingenio visible.</td>
-        <td>Declaró NO usó + métricas silenciosas dicen que sí (pastes altos, active time bajo). Mentir descalifica.</td>
-        <td>Declaró uso sin detalle ("la copié tal cual") = aceptable pero señal de bajo criterio.</td>
-      </tr></tbody>
-    </table>
-  </div>
-
-  <div class="card">
-    <h3><span class="section-tag">PARTE 3</span>Situación A · María Clara (calentador, 3ra vez)</h3>
-    <table class="rubric">
-      <thead><tr><th class="hdr-good">Buscar</th><th class="hdr-bad">Red flags</th><th class="hdr-warn">No penalizar</th></tr></thead>
-      <tbody><tr>
-        <td>Reconoce la frustración sin excusarse ("entiendo, es la tercera vez"). Se compromete con un tiempo concreto ("hoy antes de las 6pm te confirmo"). Toma ownership personal.</td>
-        <td>Excusas corporativas ("disculpa, escalamos"). Sin tiempo comprometido. Tono de plantilla. Ignora que era la 3ra vez.</td>
-        <td>Informalidad si logra calidez.</td>
-      </tr></tbody>
-    </table>
-    <p style="font-size: 13px; margin-top: 10px; color: var(--text-dim);"><strong>Meta-AI (qué le pidió / qué cambió):</strong> respuesta con criterio (ej. "le pedí el mensaje, suavizé el cierre") = bueno. "No usé AI" + mensaje suena IA = red flag.</p>
-  </div>
-
-  <div class="card">
-    <h3><span class="section-tag">PARTE 3</span>Situación B · Jorge (no entiende renta vs. compra)</h3>
-    <table class="rubric">
-      <thead><tr><th class="hdr-good">Buscar</th><th class="hdr-bad">Red flags</th><th class="hdr-warn">No penalizar</th></tr></thead>
-      <tbody><tr>
-        <td>Analogía sencilla (ahorro, cuenta, pasos de una escalera). Breve. Ofrece call de 10 min para detalles. Tono didáctico, no condescendiente.</td>
-        <td>Responde con tratado financiero. Usa jerga (capitalización, leaseback, abono de capital) sin explicar. Envía PDF sin mensaje. Hace sentir tonto a Jorge.</td>
-        <td>Que use términos Duppla si los explica bien.</td>
-      </tr></tbody>
-    </table>
-    <p style="font-size: 13px; margin-top: 10px; color: var(--text-dim);"><strong>Meta-AI:</strong> si AI generó la analogía y candidato la adaptó al tono de Jorge = bueno.</p>
-  </div>
-
-  <h2>Métricas silenciosas (columnas del Sheet)</h2>
-  <table class="meta-table">
-    <thead><tr><th>Columna</th><th>Qué significa</th><th>Señal de riesgo</th></tr></thead>
-    <tbody>
-      <tr><td><code>paste_events</code></td><td>Cantidad de veces que pegó texto (Cmd+V) en cualquier textarea.</td><td>&gt;5 pastes + dice "no usé AI" = red flag</td></tr>
-      <tr><td><code>tab_switches</code></td><td>Veces que salió y volvió al tab.</td><td>&gt;6 switches en la Parte 1 = estuvo consultando algo afuera</td></tr>
-      <tr><td><code>active_time_seconds</code></td><td>Segundos reales con el tab en foco.</td><td>&lt;300s (5 min) con respuestas largas = no las escribió aquí</td></tr>
-      <tr><td><code>statement_accepted</code></td><td>Marcó el checkbox inicial.</td><td>Siempre true (sino no llega al submit)</td></tr>
-    </tbody>
-  </table>
-
-  <h2>Tus notas</h2>
-  <div class="card notes-area">
-    <label>Notas sobre candidatos (se guardan solo en tu browser)</label>
-    <textarea id="notes" placeholder="Ej: María — Q6 muy concreta, Q10 débil. Declaró AI en Q5 con criterio."></textarea>
-  </div>
+<div class="meta-row">
+<strong>Qué medimos:</strong> qué tan avispado es el candidato con clientes reales (sin sesgar por experiencia previa) y si usa AI con criterio.
+&nbsp;·&nbsp; <strong>Score:</strong> 0-3 puntos por ejercicio (1 punto por cada señal lograda) · Total 0-15.
 </div>
 
-<script>
-(() => {
-  const NOTES_KEY = 'prueba-cs-analyst-eval-notes';
-  const ta = document.getElementById('notes');
-  ta.value = localStorage.getItem(NOTES_KEY) || '';
-  let t = null;
-  ta.addEventListener('input', () => {
-    clearTimeout(t);
-    t = setTimeout(() => { localStorage.setItem(NOTES_KEY, ta.value); }, 400);
-  });
-})();
-</script>
+<h2>Cómo se evalúa cada ejercicio</h2>
+
+<table>
+<thead>
+<tr><th class="col-3">Ejercicio</th><th class="col-3">3 señales (1 punto cada una)</th><th class="col-3">Red flags (descalifican o restan)</th></tr>
+</thead>
+<tbody>
+<tr class="ej">
+<td><strong>1 · María Clara</strong><br><span class="gray">Calentador, 3era vez sin agua caliente</span><br><strong>Mide:</strong> empatía + ownership</td>
+<td>
+<ul>
+<li>Reconoce explícitamente la frustración o que es la 3era vez</li>
+<li>Da compromiso concreto con tiempo ("hoy a las X te confirmo")</li>
+<li>Toma ownership ("yo me encargo personalmente")</li>
+</ul>
+</td>
+<td><ul>
+<li class="red">"Lamentamos los inconvenientes" sin nada concreto</li>
+<li class="red">Promete algo que no controla ("mañana viene el técnico")</li>
+<li class="red">Ignora que es la 3era vez</li>
+</ul></td>
+</tr>
+
+<tr>
+<td><strong>2 · Jorge</strong><br><span class="gray">No entiende renta vs compra</span><br><strong>Mide:</strong> claridad + didáctica</td>
+<td><ul>
+<li>Lenguaje simple, sin jerga financiera (no "amortización")</li>
+<li>Aterriza con un ejemplo o número concreto</li>
+<li>Cierra con check de comprensión o invitación a preguntar</li>
+</ul></td>
+<td><ul>
+<li class="red">Copia/pega tipo de página web (cruza con paste_events)</li>
+<li class="red">Términos técnicos sin explicar</li>
+<li class="red">Asume contexto que el cliente dijo no entender</li>
+</ul></td>
+</tr>
+
+<tr class="ej">
+<td><strong>3 · Info equivocada</strong><br><span class="gray">Diste mal un dato hace 2 días</span><br><strong>Mide:</strong> integridad</td>
+<td><ul>
+<li>Asume el error explícitamente ("me equivoqué", "te di info incorrecta")</li>
+<li>Propone qué hacer ahora con la decisión que ya tomaron</li>
+<li>Ofrece reparación o siguiente paso concreto</li>
+</ul></td>
+<td><ul>
+<li class="red">Vagueness ("hubo una confusión")</li>
+<li class="red">Echa la culpa a sistemas u otro equipo</li>
+<li class="red">Solo pide perdón, no propone solución</li>
+</ul></td>
+</tr>
+
+<tr>
+<td><strong>4 · La hora difícil</strong><br><span class="gray">5 casos fáciles vs 1 complejo con riesgo</span><br><strong>Mide:</strong> priorización</td>
+<td><ul>
+<li>Toma una decisión clara (no "depende")</li>
+<li>Justifica con criterio de valor o riesgo</li>
+<li>Considera el costo de oportunidad (qué pasa con los que no elige)</li>
+</ul></td>
+<td><ul>
+<li class="red">"Haría las dos cosas" — no entendió la pregunta</li>
+<li class="red">Lo elige por dificultad o ego ("yo puedo con todo")</li>
+<li class="red">No considera al cliente del caso complejo</li>
+</ul></td>
+</tr>
+
+<tr class="ej">
+<td><strong>5 · Critica la IA</strong><br><span class="gray">Mostrar respuesta genérica de ChatGPT</span><br><strong>Mide:</strong> uso criterioso de AI</td>
+<td><ul>
+<li>Identifica que la respuesta de IA es genérica / sin compromiso concreto</li>
+<li>Menciona qué falta (datos, acción, ownership)</li>
+<li>Reescribe o sugiere reescritura concreta</li>
+</ul></td>
+<td><ul>
+<li class="red">"Está bien, la mandaría" — no detectó el problema</li>
+<li class="red">Cambia solo el saludo o cosméticos</li>
+<li class="red">Crítica sin propuesta de mejora</li>
+</ul></td>
+</tr>
+</tbody>
+</table>
+
+<h2>Veredicto final por score total (0-15)</h2>
+<div class="veredicto">
+  <div class="v-card v-descartar"><div class="pts">0–5</div><strong>Descartar.</strong> Respuestas genéricas, sin compromiso, no entiende el problema del cliente.</div>
+  <div class="v-card v-entrevista"><div class="pts">6–9</div><strong>Entrevista corta.</strong> Hay potencial pero quedan dudas. Validar 1-2 puntos específicos.</div>
+  <div class="v-card v-avanzar"><div class="pts">10–12</div><strong>Avanzar.</strong> Sólido en la mayoría de dimensiones. Pasar a siguiente etapa.</div>
+  <div class="v-card v-prio"><div class="pts">13–15</div><strong>Prioritario.</strong> Excelente en todo. Mover rápido.</div>
+</div>
+
+<h2>Métricas silenciosas (cruzar con respuestas)</h2>
+<table>
+<thead>
+<tr><th>Métrica</th><th>Qué mide</th><th>Señal sospechosa</th></tr>
+</thead>
+<tbody>
+<tr><td><code>paste_events</code></td><td>Cuántas veces pegó algo en los textareas</td><td><span class="red">&gt; 5 + respuestas genéricas</span> = copy/paste sin filtro</td></tr>
+<tr><td><code>tab_switches</code></td><td>Cuántas veces salió del tab</td><td><span class="red">&gt; 10</span> = mucha consulta externa, ¿originales son las respuestas?</td></tr>
+<tr><td><code>active_time_seconds</code></td><td>Tiempo real con el form en foco</td><td><span class="red">&lt; 600</span> (10 min) = no se tomó la prueba en serio<br><span class="red">&gt; 3000</span> (50+ min) = se trabó o usó AI mucho</td></tr>
+</tbody>
+</table>
+
+<h2>Las 4 dimensiones que estamos midiendo</h2>
+<table>
+<thead><tr><th>Dimensión</th><th>Cómo se ve en respuestas</th><th>Ejercicios donde sale</th></tr></thead>
+<tbody>
+<tr><td><strong>Entiende al humano rápido</strong></td><td>Capta el problema real (a veces no es el que el cliente dice). Reconoce emociones</td><td>E1, E2, E3</td></tr>
+<tr><td><strong>Responde con claridad</strong></td><td>Mensaje al cliente sin clichés, con pasos concretos. Sin jerga innecesaria</td><td>E1, E2, E3, E5</td></tr>
+<tr><td><strong>Usa AI con criterio</strong></td><td>Sabe cuándo confiar en lo que la IA entrega y cuándo no</td><td>E5</td></tr>
+<tr><td><strong>Pensamiento adaptativo</strong></td><td>Llega a una respuesta nueva sin precedente, hace decisiones bajo restricción</td><td>E4, E5</td></tr>
+</tbody>
+</table>
+
+<div class="footer">
+<strong>Sheet de respuestas:</strong> <a href="https://docs.google.com/spreadsheets/d/1FRAnnw3tDNUupqOfQd0sQuhc-h3RFrFpeYLb7keZ-kY/edit">link</a> ·
+<strong>Form público:</strong> <a href="https://duppla-vibecoding.github.io/prueba-cs-analyst/">link</a> ·
+Generado 2026-04-26
+</div>
+
+</div>
 </body>
 </html>
