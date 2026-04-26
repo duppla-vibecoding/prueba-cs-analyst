@@ -83,15 +83,34 @@
   <!-- SECTION: welcome -->
   <section id="welcome-section" class="card">
     <h1>Prueba CS Analyst · Duppla</h1>
-    <p>Hola. Esta es una prueba corta para conocer cómo piensas, cómo te comunicas y cómo resuelves.</p>
+    <p>Hola. Esta prueba evalúa <strong>cómo piensas</strong>, no qué sabes. Específicamente queremos ver:</p>
+    <ul class="intro-list">
+      <li><strong>Ownership</strong> ante problemas del cliente</li>
+      <li><strong>Empatía</strong> y comunicación con humanos en momentos difíciles</li>
+      <li><strong>Priorización</strong> bajo carga</li>
+      <li><strong>Resolución de problemas</strong> ambiguos sin contexto completo</li>
+      <li><strong>Pensamiento crítico</strong> — saber cuándo confiar en información</li>
+      <li><strong>Integridad</strong> profesional</li>
+    </ul>
 
     <h2>Cómo funciona</h2>
     <ul class="intro-list">
-      <li>Empiezas con <strong>10 preguntas abiertas</strong> y un cronómetro de <strong>15 minutos</strong>.</li>
-      <li>Cuando termines, continúas con unas preguntas adicionales cortas.</li>
+      <li><strong>10 preguntas abiertas</strong> con un cronómetro de <strong>30 minutos</strong>.</li>
+      <li>Después continúas con unas preguntas cortas adicionales (sin tiempo).</li>
       <li>Respuestas genéricas, sin detalle concreto, descalifican.</li>
       <li><strong>No podrás volver a una sección anterior.</strong></li>
     </ul>
+
+    <h2 style="color: var(--warn);">⚠️ Reglas importantes</h2>
+    <ul class="intro-list">
+      <li><strong>Una sola sesión.</strong> Si cierras el navegador o la pestaña, no podrás retomar la prueba.</li>
+      <li>No abras la prueba en varias pestañas a la vez.</li>
+      <li>Si refrescas la página por accidente, tendrás unos segundos para reconectarte.</li>
+      <li>El cronómetro sigue corriendo aunque te ausentes.</li>
+    </ul>
+
+    <h2>Sobre uso de AI</h2>
+    <p>Puedes usar AI (ChatGPT, Gemini, Claude, etc.) si quieres. Al final te preguntaremos cómo y dónde la usaste. <strong>Mentir descalifica.</strong> Respuestas que se sientan genéricas también descalifican — uses AI o no.</p>
 
     <div class="statement">
       <input type="checkbox" id="statement-cb">
@@ -112,7 +131,7 @@
   <section id="part1-section" class="hidden">
     <div class="timer-bar" id="timer-bar">
       <span id="timer-label">Tiempo restante</span>
-      <span class="clock" id="clock">15:00</span>
+      <span class="clock" id="clock">30:00</span>
     </div>
     <span class="section-tag">PARTE 1</span>
     <h2 style="margin-top: 8px;">10 preguntas abiertas</h2>
@@ -177,6 +196,15 @@
     </div>
   </section>
 
+  <!-- SECTION: abandoned (game over) -->
+  <section id="abandoned-section" class="hidden">
+    <div class="error-box">
+      <h3>Esta prueba ya fue iniciada y no se puede retomar</h3>
+      <p>Detectamos que cerraste el navegador o la pestaña antes de terminar. Por integridad del proceso, la prueba se cierra cuando esto ocurre.</p>
+      <p>Si crees que es un error (por ejemplo, se cayó internet o se reinició tu computador), escríbele a <strong>fosorno@duppla.co</strong> para coordinar.</p>
+    </div>
+  </section>
+
   <!-- SECTION: error fallback -->
   <section id="error-section" class="hidden">
     <div class="error-box">
@@ -200,7 +228,8 @@
   const WEBHOOK_URL = 'https://n8n.duppla.co/webhook/prueba-cs-analyst-submit';
   // const HEARTBEAT_URL = 'https://n8n.duppla.co/webhook/prueba-cs-heartbeat'; // TODO
   const FALLBACK_EMAIL = 'fosorno@duppla.co';
-  const DURATION_MS = 15 * 60 * 1000;
+  const DURATION_MS = 30 * 60 * 1000;
+  const RESUME_TOLERANCE_MS = 60 * 1000; // 60s sin actividad → game over
   const STORAGE_KEY = 'prueba-cs-analyst-v2';
   const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
   const MAX_ACTIVE_SEC = 3600;
@@ -333,7 +362,8 @@
   const mailtoLink = $('mailto-link');
   const retryBtn = $('retry-btn');
 
-  const ALL_SECTIONS = [welcomeSec, part1Sec, part2Sec, part3Sec, successSec, errorSec];
+  const abandonedSec = $('abandoned-section');
+  const ALL_SECTIONS = [welcomeSec, part1Sec, part2Sec, part3Sec, successSec, errorSec, abandonedSec];
   function hideAll() { ALL_SECTIONS.forEach(s => s.classList.add('hidden')); }
   function show(el) { el.classList.remove('hidden'); }
 
@@ -342,20 +372,33 @@
   (function bootstrap() {
     const s0 = state.get();
     if (s0.submitted) { hideAll(); show(successSec); return; }
+    if (s0.abandoned) { hideAll(); show(abandonedSec); return; }
     emailInput.value = s0.email || '';
     statementCb.checked = !!s0.statement_accepted;
     if (s0.startTime && s0.email && s0.submission_id && s0.statement_accepted) {
+      // Si llevan más de RESUME_TOLERANCE_MS sin actividad → game over
+      const lastSeen = s0.last_seen_at ? new Date(s0.last_seen_at).getTime() : 0;
+      const gap = Date.now() - lastSeen;
+      if (gap > RESUME_TOLERANCE_MS) {
+        state.set({ abandoned: true, abandoned_at: new Date().toISOString(), abandoned_gap_ms: gap });
+        hideAll(); show(abandonedSec);
+        return;
+      }
       resumeSession();
     } else {
       hideAll(); show(welcomeSec);
     }
-    // Heartbeat (TODO: pendiente de habilitar workflow heartbeat con auth header).
-    // Cuando esté listo, descomentar:
-    // fetch(HEARTBEAT_URL, { method:'POST', headers:{'Content-Type':'text/plain'},
-    //   body: JSON.stringify({event: s0.submitted?'reopen':(s0.startTime?'resume':'open'),
-    //   ts: new Date().toISOString(), email: s0.email||null, submission_id: s0.submission_id||null}),
-    //   keepalive: true }).catch(()=>{});
   })();
+
+  // ========== Liveness heartbeat (estricto: cerrar tab > 60s = game over) ==========
+  function bumpLastSeen() {
+    const s = state.get();
+    if (!s.startTime || s.submitted || s.abandoned) return;
+    state.set({ last_seen_at: new Date().toISOString() });
+  }
+  setInterval(bumpLastSeen, 5000);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) bumpLastSeen(); });
+  window.addEventListener('focus', bumpLastSeen);
 
   function resumeSession() {
     const s = state.get();
@@ -375,15 +418,21 @@
     if (!EMAIL_RE.test(email)) { emailErr.textContent = 'Por favor ingresa un email válido.'; return; }
     if (!statementCb.checked) { emailErr.textContent = 'Debes aceptar el compromiso para continuar.'; return; }
     const existing = state.get();
+    if (existing.abandoned) {
+      hideAll(); show(abandonedSec);
+      return;
+    }
     if (existing.submission_id && existing.startTime && existing.email && !existing.submitted) {
-      const ok = confirm('Ya tienes una prueba en curso en este navegador. ¿Continuar la sesión existente?\n\n(OK = continuar · Cancelar = empezar una nueva, se pierde la anterior)');
-      if (ok) { resumeSession(); return; }
+      // Si ya hay sesión iniciada con misma identidad, continuar (sin segundo confirm)
+      resumeSession(); return;
     }
     metrics.paste_events = 0; metrics.tab_switches = 0; metrics.active_time_seconds = 0;
+    const nowIso = new Date().toISOString();
     state.set({
       email,
       submission_id: uuidV4(),
-      startTime: new Date().toISOString(),
+      startTime: nowIso,
+      last_seen_at: nowIso,
       statement_accepted: true,
       answers: {},
       p2: {},
@@ -391,6 +440,7 @@
       current_step: STEPS.P1,
       metrics: { paste_events: 0, tab_switches: 0, active_time_seconds: 0 },
       submitted: false,
+      abandoned: false,
     });
     enterPart1();
   });
@@ -726,6 +776,10 @@
       const v = JSON.parse(e.newValue || '{}');
       if (v.submitted) {
         hideAll(); show(successSec);
+        if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+        if (activeIntervalId) { clearInterval(activeIntervalId); activeIntervalId = null; }
+      } else if (v.abandoned) {
+        hideAll(); show(abandonedSec);
         if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
         if (activeIntervalId) { clearInterval(activeIntervalId); activeIntervalId = null; }
       }
