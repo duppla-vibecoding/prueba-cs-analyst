@@ -198,7 +198,8 @@
 (() => {
   // ========== Config ==========
   const WEBHOOK_URL = 'https://n8n.duppla.co/webhook/prueba-cs-analyst-submit';
-  const FALLBACK_EMAIL = 'ccarlosmlara97@gmail.com';
+  // const HEARTBEAT_URL = 'https://n8n.duppla.co/webhook/prueba-cs-heartbeat'; // TODO
+  const FALLBACK_EMAIL = 'fosorno@duppla.co';
   const DURATION_MS = 15 * 60 * 1000;
   const STORAGE_KEY = 'prueba-cs-analyst-v2';
   const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
@@ -348,6 +349,12 @@
     } else {
       hideAll(); show(welcomeSec);
     }
+    // Heartbeat (TODO: pendiente de habilitar workflow heartbeat con auth header).
+    // Cuando esté listo, descomentar:
+    // fetch(HEARTBEAT_URL, { method:'POST', headers:{'Content-Type':'text/plain'},
+    //   body: JSON.stringify({event: s0.submitted?'reopen':(s0.startTime?'resume':'open'),
+    //   ts: new Date().toISOString(), email: s0.email||null, submission_id: s0.submission_id||null}),
+    //   keepalive: true }).catch(()=>{});
   })();
 
   function resumeSession() {
