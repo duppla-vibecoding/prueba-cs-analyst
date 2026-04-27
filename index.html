@@ -205,8 +205,12 @@
 
     <div class="row">
       <button id="submit-btn">Enviar respuestas</button>
+      <button id="backup-btn" class="ghost" type="button">Descargar respaldo (.txt)</button>
       <span class="submit-status" id="submit-status"></span>
     </div>
+    <p class="dim" style="font-size:12.5px; margin-top:8px;">
+      Si "Enviar" falla, descarga el respaldo y mándalo a fosorno@duppla.co. No pierdes tus respuestas.
+    </p>
   </section>
 
   <!-- SUCCESS -->
@@ -514,12 +518,14 @@
 
   async function sendSubmission() {
     const payload = buildPayload();
+    console.log('[prueba-cs] sendSubmission start', { email: payload.email, sid: payload.submission_id });
     try {
       const res = await fetch(WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'text/plain' },
         body: JSON.stringify(payload),
       });
+      console.log('[prueba-cs] fetch response', res.status);
       let data = null;
       try { data = await res.json(); } catch {}
       if (!res.ok || (data && data.ok === false)) {
@@ -529,10 +535,53 @@
       hideAll(); show(successSec);
       if (activeIntervalId) { clearInterval(activeIntervalId); activeIntervalId = null; }
     } catch (err) {
+      const msg = (err && err.message) ? err.message : String(err);
+      console.error('[prueba-cs] submit FAILED', err);
+      try { localStorage.setItem('prueba-cs-analyst-last-error', JSON.stringify({ msg, at: new Date().toISOString() })); } catch(_){}
       submitBtn.disabled = false;
-      submitStatus.textContent = '';
+      submitStatus.style.color = 'var(--bad)';
+      submitStatus.textContent = `Error al enviar: ${msg}. Usa "Descargar respaldo".`;
       showErrorFallback(payload, err);
     }
+  }
+
+  // ========== Backup descargable ==========
+  function buildBackupText() {
+    const cur = state.get();
+    const ans = cur.answers || {};
+    const lines = [];
+    lines.push('PRUEBA CS ANALYST · RESPALDO MANUAL');
+    lines.push('='.repeat(50));
+    lines.push(`Email: ${cur.email || '(sin email)'}`);
+    lines.push(`Submission ID: ${cur.submission_id || '(sin id)'}`);
+    lines.push(`Inicio: ${cur.startTime || '(sin start)'}`);
+    lines.push(`Generado: ${new Date().toISOString()}`);
+    lines.push('');
+    EXERCISES.forEach((id, i) => {
+      lines.push(`--- EJERCICIO ${i+1} (${id}) ---`);
+      lines.push((ans[id] || '').trim() || '(vacío)');
+      lines.push('');
+    });
+    lines.push('='.repeat(50));
+    lines.push('Mandar este archivo a fosorno@duppla.co');
+    return lines.join('\n');
+  }
+  const backupBtn = $('backup-btn');
+  if (backupBtn) {
+    backupBtn.addEventListener('click', () => {
+      flushAnswers();
+      const text = buildBackupText();
+      const cur = state.get();
+      const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const safeEmail = (cur.email || 'sin-email').replace(/[^a-z0-9@._-]/gi, '_');
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `prueba-cs-${safeEmail}-${stamp}.txt`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    });
   }
 
   function showErrorFallback(payload, err) {
