@@ -78,7 +78,7 @@
   <!-- WELCOME -->
   <section id="welcome-section" class="card">
     <h1>Prueba candidatos analista junior CS · duppla</h1>
-    <p>Hola. Esta prueba es 5 ejercicios cortos. Queremos ver cómo respondes a clientes reales.</p>
+    <p>Hola. Esta prueba es 10 ejercicios cortos. Queremos ver cómo respondes a clientes reales.</p>
 
     <h2>Qué medimos</h2>
     <ul class="intro-list">
@@ -90,8 +90,8 @@
 
     <h2>Cómo funciona</h2>
     <ul class="intro-list">
-      <li>5 ejercicios. Lees una situación, respondes en el cuadro.</li>
-      <li>Te debería tomar entre <strong>10 y 15 minutos</strong>.</li>
+      <li>10 ejercicios. Lees una situación, respondes en el cuadro.</li>
+      <li>Te debería tomar entre <strong>15 y 25 minutos</strong>.</li>
       <li>El <strong>Ejercicio 4</strong> tiene tiempo sugerido de 5 minutos (con cronómetro visible). No bloquea, pero queda registrado cuánto tomas.</li>
       <li><strong>IA permitida y recomendada</strong> (en duppla la usamos todos los días). Lo que evaluamos no es si la usas, sino el juicio detrás de tus respuestas.</li>
       <li>Respuestas genéricas, sin compromiso concreto, descalifican.</li>
@@ -109,7 +109,7 @@
 
   <!-- EJERCICIOS -->
   <section id="exercises-section" class="hidden">
-    <p class="dim" style="margin-bottom: 18px;">5 ejercicios · respuestas se guardan automáticamente</p>
+    <p class="dim" style="margin-bottom: 18px;">10 ejercicios · respuestas se guardan automáticamente</p>
 
     <div class="ej-card">
       <span class="ej-num">EJERCICIO 1</span>
@@ -160,6 +160,51 @@
       <textarea id="e5" placeholder="Tu crítica..."></textarea>
     </div>
 
+    <div class="ej-card">
+      <span class="ej-num">EJERCICIO 6</span>
+      <div class="ej-title">Coordinar con operaciones</div>
+      <p>Una clienta urge una visita técnica hoy. Le escribiste a operaciones por Slack y te responden:</p>
+      <div class="scenario">"Estoy full hoy. Lo más temprano que puedo es mañana 10am."</div>
+      <p>La clienta espera respuesta tuya hoy.</p>
+      <div class="ej-hint">Escribe los <strong>dos mensajes</strong>: el que le mandas a la clienta, y el que le respondes a operaciones.</div>
+      <textarea id="e6" placeholder="Mensaje a la clienta:&#10;...&#10;&#10;Mensaje a operaciones:&#10;..."></textarea>
+    </div>
+
+    <div class="ej-card">
+      <span class="ej-num">EJERCICIO 7</span>
+      <div class="ej-title">Quiere hablar con tu jefe</div>
+      <p>Un cliente molesto te escribe:</p>
+      <div class="scenario">"Esto es inaceptable. Quiero hablar YA con tu jefe o con el CEO. No pierdo más tiempo contigo."</div>
+      <p>El reclamo es legítimo, fue un error de tu equipo.</p>
+      <div class="ej-hint">¿Qué le respondes? ¿Lo escalas o no?</div>
+      <textarea id="e7" placeholder="Tu respuesta..."></textarea>
+    </div>
+
+    <div class="ej-card">
+      <span class="ej-num">EJERCICIO 8</span>
+      <div class="ej-title">Mensaje ambiguo</div>
+      <p>Un cliente te escribe esto y no dice nada más:</p>
+      <div class="scenario">"Creo que ya no quiero seguir con esto."</div>
+      <div class="ej-hint">¿Qué haces antes de responder y qué le escribes?</div>
+      <textarea id="e8" placeholder="Tu respuesta..."></textarea>
+    </div>
+
+    <div class="ej-card">
+      <span class="ej-num">EJERCICIO 9</span>
+      <div class="ej-title">Decir "no se puede"</div>
+      <p>Un cliente te pide un descuento del 30% que no puedes aprobar. Es un cliente bueno: lleva 1 año, paga puntual y ya recomendó a 2 amigos.</p>
+      <div class="ej-hint">¿Cómo se lo dices sin perderlo?</div>
+      <textarea id="e9" placeholder="Tu respuesta..."></textarea>
+    </div>
+
+    <div class="ej-card">
+      <span class="ej-num">EJERCICIO 10</span>
+      <div class="ej-title">Alertar a tu equipo</div>
+      <p>Esta semana detectaste que 5 clientes distintos se quejaron de lo mismo: el técnico llegó tarde sin avisar.</p>
+      <div class="ej-hint">Escribe el mensaje (Slack o email) que le mandarías a tu equipo para que tomen acción. Máximo 6 líneas.</div>
+      <textarea id="e10" placeholder="Tu mensaje..."></textarea>
+    </div>
+
     <div class="row">
       <button id="submit-btn">Enviar respuestas</button>
       <span class="submit-status" id="submit-status"></span>
@@ -201,7 +246,7 @@
   const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
   const MAX_ACTIVE_SEC = 5400; // 90 min cap
 
-  const EXERCISES = ['e1','e2','e3','e4','e5'];
+  const EXERCISES = ['e1','e2','e3','e4','e5','e6','e7','e8','e9','e10'];
 
   // ========== State ==========
   const state = {
@@ -375,12 +420,14 @@
         $(id).addEventListener('input', flushAnswers);
         $(id).addEventListener('blur', flushAnswers);
       });
-      // E4 timer arranca cuando hacen primer keystroke en e4
+      // E4 timer arranca cuando el candidato llega al ejercicio (focus o primer input)
       const e4 = $('e4');
-      e4.addEventListener('input', () => {
+      const triggerE4 = () => {
         const cur = state.get();
         if (!cur.e4_started_at) startE4Timer();
-      }, { once: false });
+      };
+      e4.addEventListener('focus', triggerE4);
+      e4.addEventListener('input', triggerE4);
     }
     // Si ya había arrancado el timer en sesión previa, retomarlo
     if (state.get().e4_started_at) startE4Timer();
@@ -406,15 +453,20 @@
       start_time: cur.startTime,
       end_time: new Date().toISOString(),
       user_agent: navigator.userAgent,
-      // Map e1-e5 a q1-q5 del Sheet existente; q6 lleva e4_seconds_to_finish (señal de E4 timing)
+      // Map e1-e10 directo a q1-q10 del Sheet
       q1: ans.e1 || '',
       q2: ans.e2 || '',
       q3: ans.e3 || '',
       q4: ans.e4 || '',
       q5: ans.e5 || '',
-      q6: e4SecondsToFinish ? `e4_seconds_to_finish=${e4SecondsToFinish}` : '',
-      q7: '', q8: '', q9: '', q10: '',
-      p2_msg1: '', p2_meta1: '', p2_msg2: '', p2_meta2: '',
+      q6: ans.e6 || '',
+      q7: ans.e7 || '',
+      q8: ans.e8 || '',
+      q9: ans.e9 || '',
+      q10: ans.e10 || '',
+      // Métrica E4 timing en columna legacy unused
+      p2_msg1: e4SecondsToFinish ? `e4_seconds_to_finish=${e4SecondsToFinish}` : '',
+      p2_meta1: '', p2_msg2: '', p2_meta2: '',
       ai_used: '', ai_where: '', ai_mine_vs_ai: '',
       paste_events: metrics.paste_events,
       tab_switches: metrics.tab_switches,
