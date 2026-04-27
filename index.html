@@ -309,7 +309,8 @@
     if (!statementCb.checked) { emailErr.textContent = 'Debes aceptar el compromiso para continuar.'; return; }
     const existing = state.get();
     if (existing.submission_id && existing.startTime && existing.email && !existing.submitted) {
-      // Continuar sesión existente con misma identidad
+      // Continuar sesión existente. Si cambió el email, lo actualizamos.
+      if (existing.email !== email) state.set({ email });
       enterExercises();
       return;
     }
@@ -426,7 +427,6 @@
   }
 
   // ========== Partial submission ==========
-  let partialSentOnce = false;
   function sendPartialSubmission(reason) {
     try {
       const cur = state.get();
@@ -447,18 +447,19 @@
     } catch(_) {}
   }
 
-  // Auto-save partial cuando han pasado al menos 5 minutos y hay 1+ ejercicio respondido
+  // Auto-save partial cuando han pasado al menos 5 minutos y hay 2+ ejercicios respondidos
+  // partial_sent_at persiste cross-refresh para evitar spam de partials
   setInterval(() => {
     const cur = state.get();
     if (!cur.startTime || cur.submitted) return;
     const ageSec = (Date.now() - new Date(cur.startTime).getTime()) / 1000;
-    if (ageSec < 300) return; // esperar 5 min antes del primer partial
-    if (partialSentOnce) return; // solo 1 partial silencioso por sesión (evitar ruido)
+    if (ageSec < 300) return;
+    if (cur.partial_sent_at) return;
     const ans = cur.answers || {};
     const filled = EXERCISES.filter(id => (ans[id] || '').trim().length > 30).length;
     if (filled >= 2) {
       sendPartialSubmission('autosave_2_done');
-      partialSentOnce = true;
+      state.set({ partial_sent_at: new Date().toISOString() });
     }
   }, 60000);
 
@@ -472,11 +473,28 @@
   });
 
   // ========== Submit ==========
+  function validateAnswers() {
+    flushAnswers();
+    const ans = state.get().answers || {};
+    const empty = EXERCISES.filter(id => (ans[id] || '').trim().length === 0);
+    if (empty.length === 0) return null;
+    const nums = empty.map(id => id.replace('e','')).join(', ');
+    return `Te faltan ejercicio(s): ${nums}. Responde todos antes de enviar.`;
+  }
+
   submitBtn.addEventListener('click', () => {
     if (submitBtn.disabled) return;
+    const err = validateAnswers();
+    if (err) {
+      submitStatus.textContent = err;
+      submitStatus.style.color = 'var(--bad)';
+      const firstEmpty = EXERCISES.find(id => !((state.get().answers || {})[id] || '').trim());
+      if (firstEmpty) $(firstEmpty).focus();
+      return;
+    }
+    submitStatus.style.color = '';
     submitBtn.disabled = true;
     submitStatus.textContent = 'Enviando...';
-    flushAnswers();
     sendSubmission();
   });
 
@@ -496,6 +514,7 @@
       state.set({ submitted: true, end_time: payload.end_time });
       hideAll(); show(successSec);
       if (activeIntervalId) { clearInterval(activeIntervalId); activeIntervalId = null; }
+      if (e4TimerInterval) { clearInterval(e4TimerInterval); e4TimerInterval = null; }
     } catch (err) {
       submitBtn.disabled = false;
       submitStatus.textContent = '';
@@ -541,8 +560,20 @@
       if (v.submitted) {
         hideAll(); show(successSec);
         if (activeIntervalId) { clearInterval(activeIntervalId); activeIntervalId = null; }
+        if (e4TimerInterval) { clearInterval(e4TimerInterval); e4TimerInterval = null; }
       }
     } catch {}
+  });
+
+  // Limpiar mensaje de validación apenas el candidato edita un ejercicio
+  EXERCISES.forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('input', () => {
+      if (submitStatus.textContent && submitStatus.style.color) {
+        submitStatus.textContent = '';
+        submitStatus.style.color = '';
+      }
+    });
   });
 })();
 </script>
