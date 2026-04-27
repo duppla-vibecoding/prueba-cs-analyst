@@ -90,11 +90,6 @@
       <li>Respuestas genéricas, sin compromiso concreto, descalifican.</li>
     </ul>
 
-    <div class="statement">
-      <input type="checkbox" id="statement-cb">
-      <label for="statement-cb">Acepto responder con honestidad. Entiendo que respuestas genéricas, sin detalle concreto, descalifican.</label>
-    </div>
-
     <h2>Tu email</h2>
     <label for="email">Email de contacto</label>
     <input type="email" id="email" placeholder="tu@email.com" autocomplete="email">
@@ -273,7 +268,6 @@
   const errorSec = $('error-section');
   const emailInput = $('email');
   const emailErr = $('email-error');
-  const statementCb = $('statement-cb');
   const startBtn = $('start-btn');
   const submitBtn = $('submit-btn');
   const submitStatus = $('submit-status');
@@ -292,8 +286,7 @@
     const s0 = state.get();
     if (s0.submitted) { hideAll(); show(successSec); return; }
     emailInput.value = s0.email || '';
-    statementCb.checked = !!s0.statement_accepted;
-    if (s0.startTime && s0.email && s0.submission_id && s0.statement_accepted) {
+    if (s0.startTime && s0.email && s0.submission_id) {
       enterExercises();
     } else {
       hideAll(); show(welcomeSec);
@@ -306,7 +299,6 @@
     emailErr.textContent = '';
     const email = (emailInput.value || '').trim();
     if (!EMAIL_RE.test(email)) { emailErr.textContent = 'Por favor ingresa un email válido.'; return; }
-    if (!statementCb.checked) { emailErr.textContent = 'Debes aceptar el compromiso para continuar.'; return; }
     const existing = state.get();
     if (existing.submission_id && existing.startTime && existing.email && !existing.submitted) {
       // Continuar sesión existente. Si cambió el email, lo actualizamos.
