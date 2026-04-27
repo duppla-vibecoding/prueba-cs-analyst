@@ -66,9 +66,6 @@
   .footer-note { text-align: center; color: var(--text-dim); font-size: 12.5px; margin-top: 30px; }
   .submit-status { color: var(--text-dim); font-size: 13.5px; }
   .ej-hint { font-size: 13px; color: var(--text-dim); margin-bottom: 8px; font-weight: 600; }
-  .e4-timer { display: inline-block; margin-left: 10px; font-size: 14px; color: var(--blue); font-weight: 700; padding: 3px 10px; background: var(--blue-pale); border-radius: 999px; }
-  .e4-timer.warn { color: var(--warn); background: #fef3c7; }
-  .e4-timer.over { color: var(--bad); background: #fee2e2; }
   @media (max-width: 600px) { .wrap { padding: 18px 14px 60px; } h1 { font-size: 24px; } .card, .ej-card { padding: 20px; } }
 </style>
 </head>
@@ -91,8 +88,7 @@
     <h2>Cómo funciona</h2>
     <ul class="intro-list">
       <li>10 ejercicios. Lees una situación, respondes en el cuadro.</li>
-      <li>Te debería tomar entre <strong>15 y 25 minutos</strong>.</li>
-      <li>El <strong>Ejercicio 4</strong> tiene tiempo sugerido de 5 minutos (con cronómetro visible). No bloquea, pero queda registrado cuánto tomas.</li>
+      <li>Te debería tomar entre <strong>15 y 25 minutos</strong>. Ese es el rango que esperamos: ni mucho menos, ni mucho más.</li>
       <li><strong>IA permitida y recomendada</strong> (en duppla la usamos todos los días). Lo que evaluamos no es si la usas, sino el juicio detrás de tus respuestas.</li>
       <li>Respuestas genéricas, sin compromiso concreto, descalifican.</li>
     </ul>
@@ -140,8 +136,7 @@
 
     <div class="ej-card" id="e4-card">
       <span class="ej-num">EJERCICIO 4</span>
-      <div class="ej-title">La hora difícil <span id="e4-timer" class="e4-timer">⏱ 5:00</span></div>
-      <p style="margin-bottom: 6px;"><strong>Este ejercicio tiene tiempo sugerido: 5 minutos.</strong> El cronómetro arranca cuando empiezas a escribir. Puedes seguir después, pero queda registrado cuánto te tomó.</p>
+      <div class="ej-title">La hora difícil</div>
       <p>Tienes 1 hora antes de salir. Tienes que elegir entre:</p>
       <ul class="intro-list">
         <li><strong>Opción A:</strong> cerrar 5 casos sencillos pendientes que llevan 2 días esperándote.</li>
@@ -371,39 +366,10 @@
     enterExercises();
   });
 
-  // ========== E4 timer (soft, 5 min, no bloquea) ==========
-  const E4_TARGET_SEC = 300;
-  let e4TimerInterval = null;
-  function formatMmSs(sec) {
-    const m = Math.max(0, Math.floor(sec/60));
-    const s = Math.max(0, sec % 60);
-    return `${m}:${String(Math.abs(s)).padStart(2,'0')}`;
-  }
-  function tickE4Timer() {
+  // ========== E4 tracking silencioso (sin UI) ==========
+  function markE4Started() {
     const cur = state.get();
-    if (!cur.e4_started_at) return;
-    const elapsed = Math.floor((Date.now() - new Date(cur.e4_started_at).getTime())/1000);
-    const remain = E4_TARGET_SEC - elapsed;
-    const el = $('e4-timer');
-    if (!el) return;
-    if (remain >= 0) {
-      el.textContent = `⏱ ${formatMmSs(remain)}`;
-      el.classList.remove('warn','over');
-      if (remain <= 60) el.classList.add('warn');
-    } else {
-      el.textContent = `⏱ +${formatMmSs(-remain)} sobre el tiempo`;
-      el.classList.remove('warn');
-      el.classList.add('over');
-    }
-  }
-  function startE4Timer() {
-    if (e4TimerInterval) return;
-    const cur = state.get();
-    if (!cur.e4_started_at) {
-      state.set({ e4_started_at: new Date().toISOString() });
-    }
-    tickE4Timer();
-    e4TimerInterval = setInterval(tickE4Timer, 1000);
+    if (!cur.e4_started_at) state.set({ e4_started_at: new Date().toISOString() });
   }
 
   // ========== Enter exercises ==========
@@ -420,17 +386,11 @@
         $(id).addEventListener('input', flushAnswers);
         $(id).addEventListener('blur', flushAnswers);
       });
-      // E4 timer arranca cuando el candidato llega al ejercicio (focus o primer input)
+      // Tracking silencioso de E4: marca timestamp en focus o primer input
       const e4 = $('e4');
-      const triggerE4 = () => {
-        const cur = state.get();
-        if (!cur.e4_started_at) startE4Timer();
-      };
-      e4.addEventListener('focus', triggerE4);
-      e4.addEventListener('input', triggerE4);
+      e4.addEventListener('focus', markE4Started);
+      e4.addEventListener('input', markE4Started);
     }
-    // Si ya había arrancado el timer en sesión previa, retomarlo
-    if (state.get().e4_started_at) startE4Timer();
   }
 
   function flushAnswers() {
@@ -565,7 +525,6 @@
       state.set({ submitted: true, end_time: payload.end_time });
       hideAll(); show(successSec);
       if (activeIntervalId) { clearInterval(activeIntervalId); activeIntervalId = null; }
-      if (e4TimerInterval) { clearInterval(e4TimerInterval); e4TimerInterval = null; }
     } catch (err) {
       submitBtn.disabled = false;
       submitStatus.textContent = '';
@@ -611,7 +570,6 @@
       if (v.submitted) {
         hideAll(); show(successSec);
         if (activeIntervalId) { clearInterval(activeIntervalId); activeIntervalId = null; }
-        if (e4TimerInterval) { clearInterval(e4TimerInterval); e4TimerInterval = null; }
       }
     } catch {}
   });

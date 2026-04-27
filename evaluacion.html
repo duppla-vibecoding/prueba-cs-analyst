@@ -219,8 +219,8 @@
 <tbody>
 <tr><td><code>paste_events</code></td><td>Cuántas veces pegó algo en los textareas</td><td><span class="red">&gt; 5 + respuestas genéricas</span> = copy/paste sin filtro</td></tr>
 <tr><td><code>tab_switches</code></td><td>Cuántas veces salió del tab</td><td><span class="red">&gt; 10</span> = mucha consulta externa, ¿originales son las respuestas?</td></tr>
-<tr><td><code>active_time_seconds</code></td><td>Tiempo real con el form en foco</td><td><span class="red">&lt; 600</span> (10 min) = no se tomó la prueba en serio<br><span class="red">&gt; 3000</span> (50+ min) = se trabó o usó AI mucho</td></tr>
-<tr><td><code>e4_seconds_to_finish</code><br><span class="gray">(viene en columna p2_msg1 con prefijo)</span></td><td>Tiempo real que tardó en E4 (desde focus/primer keystroke hasta submit). Tiempo sugerido: 5 min.</td><td><span class="red">&gt; 600s (10 min)</span> = se trabó en la decisión<br><span class="grn">≤ 300s</span> = decidió en el tiempo sugerido</td></tr>
+<tr><td><code>active_time_seconds</code></td><td>Tiempo real con el form en foco. Rango esperado <strong>15-25 min (900-1500s)</strong>.</td><td><span class="red">&lt; 600</span> (10 min) = se apuró, posible AI sin lectura<br><span class="red">&gt; 1800</span> (30+ min) = se trabó o usó AI excesivamente<br><span class="grn">900-1500</span> = en el rango esperado</td></tr>
+<tr><td><code>e4_seconds_to_finish</code><br><span class="gray">(viene en columna p2_msg1 con prefijo)</span></td><td>Tiempo desde focus de E4 hasta submit. Solo señal extra.</td><td><span class="red">&gt; 600s (10 min)</span> = se trabó en E4<br><span class="grn">≤ 300s</span> = decidió en buen tiempo</td></tr>
 </tbody>
 </table>
 
