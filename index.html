@@ -236,7 +236,7 @@
     </div>
   </section>
 
-  <div class="footer-note">duppla · Prueba candidatos analista junior CS</div>
+  <div class="footer-note">duppla · Prueba candidatos analista junior CS · <span id="build-stamp"></span></div>
 </div>
 
 <script>
@@ -249,6 +249,24 @@
   const MAX_ACTIVE_SEC = 5400; // 90 min cap
 
   const EXERCISES = ['e1','e2','e3','e4','e5','e6','e7','e8','e9','e10'];
+  const BUILD_ID = 'v6-2026-04-27-bulletproof';
+  try { const bs = document.getElementById('build-stamp'); if (bs) bs.textContent = `build ${BUILD_ID}`; } catch(_){}
+  // Captura cualquier error JS no manejado y lo muestra en pantalla
+  window.addEventListener('error', (e) => {
+    try {
+      const ss = document.getElementById('submit-status');
+      if (ss) { ss.style.color = '#d33'; ss.textContent = `JS error: ${e.message}`; }
+      localStorage.setItem('prueba-cs-analyst-last-error', JSON.stringify({ msg: e.message, src: e.filename, line: e.lineno, at: new Date().toISOString() }));
+    } catch(_){}
+  });
+  window.addEventListener('unhandledrejection', (e) => {
+    try {
+      const msg = (e.reason && e.reason.message) ? e.reason.message : String(e.reason);
+      const ss = document.getElementById('submit-status');
+      if (ss) { ss.style.color = '#d33'; ss.textContent = `Promise error: ${msg}`; }
+      localStorage.setItem('prueba-cs-analyst-last-error', JSON.stringify({ msg, type: 'unhandled-rejection', at: new Date().toISOString() }));
+    } catch(_){}
+  });
 
   // ========== State ==========
   const state = {
@@ -516,33 +534,78 @@
     sendSubmission();
   });
 
+  async function fetchWithTimeout(url, opts, timeoutMs) {
+    const controller = new AbortController();
+    const t = setTimeout(() => controller.abort(), timeoutMs);
+    try {
+      const res = await fetch(url, { ...opts, signal: controller.signal });
+      return res;
+    } finally {
+      clearTimeout(t);
+    }
+  }
+
+  async function tryOneSubmit(payload) {
+    const res = await fetchWithTimeout(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload),
+    }, 10000);
+    let data = null;
+    try { data = await res.json(); } catch {}
+    if (!res.ok || (data && data.ok === false)) {
+      throw new Error((data && data.error) || `HTTP ${res.status}`);
+    }
+    return data;
+  }
+
+  function autoDownloadBackup(reason) {
+    try {
+      flushAnswers();
+      const text = buildBackupText() + `\n\n[Auto-respaldo: ${reason}]`;
+      const cur = state.get();
+      const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+      const safeEmail = (cur.email || 'sin-email').replace(/[^a-z0-9@._-]/gi, '_');
+      const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `prueba-cs-${safeEmail}-${stamp}.txt`;
+      document.body.appendChild(a); a.click(); document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 2000);
+      return true;
+    } catch(_) { return false; }
+  }
+
   async function sendSubmission() {
     const payload = buildPayload();
-    console.log('[prueba-cs] sendSubmission start', { email: payload.email, sid: payload.submission_id });
-    try {
-      const res = await fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload),
-      });
-      console.log('[prueba-cs] fetch response', res.status);
-      let data = null;
-      try { data = await res.json(); } catch {}
-      if (!res.ok || (data && data.ok === false)) {
-        throw new Error((data && data.error) || `HTTP ${res.status}`);
+    console.log('[prueba-cs] sendSubmission start', { build: BUILD_ID, email: payload.email, sid: payload.submission_id });
+    let lastErr = null;
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        submitStatus.style.color = '';
+        submitStatus.textContent = attempt === 1 ? 'Enviando...' : `Reintento ${attempt}/3...`;
+        const data = await tryOneSubmit(payload);
+        console.log('[prueba-cs] submit OK', data);
+        state.set({ submitted: true, end_time: payload.end_time });
+        hideAll(); show(successSec);
+        if (activeIntervalId) { clearInterval(activeIntervalId); activeIntervalId = null; }
+        return;
+      } catch (err) {
+        lastErr = err;
+        const msg = (err && err.message) ? err.message : String(err);
+        console.error(`[prueba-cs] attempt ${attempt} FAILED:`, msg);
+        try { localStorage.setItem('prueba-cs-analyst-last-error', JSON.stringify({ msg, attempt, at: new Date().toISOString() })); } catch(_){}
+        if (attempt < 3) await new Promise(r => setTimeout(r, 1500 * attempt));
       }
-      state.set({ submitted: true, end_time: payload.end_time });
-      hideAll(); show(successSec);
-      if (activeIntervalId) { clearInterval(activeIntervalId); activeIntervalId = null; }
-    } catch (err) {
-      const msg = (err && err.message) ? err.message : String(err);
-      console.error('[prueba-cs] submit FAILED', err);
-      try { localStorage.setItem('prueba-cs-analyst-last-error', JSON.stringify({ msg, at: new Date().toISOString() })); } catch(_){}
-      submitBtn.disabled = false;
-      submitStatus.style.color = 'var(--bad)';
-      submitStatus.textContent = `Error al enviar: ${msg}. Usa "Descargar respaldo".`;
-      showErrorFallback(payload, err);
     }
+    // Los 3 intentos fallaron: auto-descarga respaldo y muestra error visible
+    const msg = (lastErr && lastErr.message) ? lastErr.message : String(lastErr);
+    submitBtn.disabled = false;
+    submitStatus.style.color = 'var(--bad)';
+    submitStatus.textContent = `No se pudo enviar (${msg}). Te bajamos el archivo de respaldo automáticamente. Mándalo a fosorno@duppla.co.`;
+    autoDownloadBackup(`fetch_failed: ${msg}`);
+    showErrorFallback(payload, lastErr);
   }
 
   // ========== Backup descargable ==========
